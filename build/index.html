@@ -46,8 +46,11 @@
         <h2>Доставка</h2>
 
         <fieldset class="group">
-          <label for="address" tabindex="-1">Адрес</label><input type="text" id="address" name="address" aria-labelledby="tooltip">
+          <label for="address" tabindex="-1">Адрес</label>
+          <div class="tooltip" id="tooltip" style="float: right;" >Пожалуйста, укажите адрес</div>
+          <input type="text" id="address" name="address">
         </fieldset>
+
 
         <fieldset class="group">
           <label for="date" tabindex="-1`">Дата доставки</label>
@@ -74,7 +77,7 @@
         </div>
 
         <fieldset class="card">
-          <label for="card-1" tabindex="-1">Номер карты</label>
+          <label for="card-1" tabindex="0">Номер карты</label>
 
           <input type="hidden" name="credit-card" required>
 
@@ -92,11 +95,11 @@
       <p class="phone-description phone-description-delivery">Телефон нужен для того, чтобы курьер мог связаться с вами, когда товар будет доставлен.
     </fieldset>
 
-    <div class="tooltip" id="tooltip" role="tooltip" style="top: 250px; left: 785px;">Пожалуйста, укажите адрес</div>
+
 
     <div class="submit">
       <button name="send">Заказать</button>
-      <p>Осталось заполнить:<br><label tabindex="0">адрес</label>, и <label for="" tabindex="0"> вот это</label>, ну, <label for="" tabindex="0">и неплохо бы вот то</label>
+      <p>Осталось заполнить:<br><label tabindex="0">адрес</label> и <label for="" tabindex="0"> вот это.</label>  Ну, и неплохо бы <label for="" tabindex="0">вот то</label>
     </div>
   </form>
 </div>

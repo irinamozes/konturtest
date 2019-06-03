@@ -10,12 +10,14 @@ var addressTooltipElement = document.querySelector('#tooltip');
 var checkedPickupElement = document.querySelector('input[name = "delivery-method"]:checked');
 var checkedPickupAddrElement = document.querySelector('input[name = "pickup-point"]:checked');
 
+var addressElement = document.querySelector('#address');
+
 var labelDataElement = document.querySelector('label[for = "date"]');
 
 var cardNumberElement = document.querySelector('.card');
 var cardInputElement = document.querySelectorAll('.card-section');
 var cardInputArr = Array.prototype.slice.call(cardInputElement, 0);
-
+var card1Element = document.querySelector('#card-1');
 
 var methodMenuElement = document.querySelectorAll('label[for*="delivery"]');
 var addrPickupMenuElement = document.querySelectorAll('label[for*="pickup-point"]');
@@ -58,7 +60,9 @@ var deliveryMaxInterval = 9; //Максимальное количество ч�
 
 
 var phoneElement = document.querySelector('#phone');
+
 var phoneDeliveryPElement = document.querySelector('.phone-description-delivery');
+
 var phonePickupPElement = document.querySelector('.phone-description-pickup');
 
 
@@ -66,18 +70,39 @@ var containerSubmitElement = document.querySelector('.submit');
 var buttonSubmitElement = containerSubmitElement.childNodes[1];
 var tooltipSubmitElement = containerSubmitElement.childNodes[3];
 
-
 tooltipSubmitElement.childNodes[4].setAttribute('for', 'phone');
-
+tooltipSubmitElement.childNodes[2].setAttribute('for', 'address');
+tooltipSubmitElement.childNodes[6].setAttribute('for', 'card-1');
 
 var pCreateElement = document.createElement('p');//Создание элемента надписи с выбранным адресом самовывоза на карте
 
 var mapContainerElement = document.querySelector('.map-container');
 mapContainerElement.appendChild(pCreateElement);
 
+//Переменные, показывающие какой пункт в двупунктном меню выбран
+var pic = 0;
+var deliv = 0;
+var payCard = 0;
+var payCash = 0;
+
+
+//Объект со свойствами, показывающими какое из обзательных полей заполнено, а какое нет, обеспечивающий возможность выводить, или убирать текст "Осталось заполнить"
+var tooltipInput = {};
+
+tooltipInput.addr = 0;
+tooltipInput.tel = 0;
+tooltipInput.car = 0;
+
+
+
+
 
 //Конструктор объекта-контейнера с id = #layout, которому делегируются все события.
+
 var GetGood = function(elem) {
+
+   var self = this;
+
 
   //Метод для нахождения элемента Input по соответствующему ему элементу Label
   this.findInputElement = function(labelElement) {
@@ -87,6 +112,7 @@ var GetGood = function(elem) {
 
     return inputElement;
   };
+
 
 
   //Метод для нахождения элемента Label по соответствующему ему элементу Input
@@ -99,6 +125,7 @@ var GetGood = function(elem) {
 
     return labelElement;
   };
+
 
 
   //Метод для установки стиля на выбранный элемент Label и снятия стиля с предыдущего выбранного элемента Label
@@ -114,8 +141,11 @@ var GetGood = function(elem) {
     }
   };
 
+
+
   //Обработчик события выбора пункта Самовывоз в меню способа получения товара
   this.pickup = function(checkedMethodElement) {
+
 
     buttonSubmitElement.disabled = true;
 
@@ -126,10 +156,22 @@ var GetGood = function(elem) {
     phoneDeliveryPElement.classList.add('invisible');
     phonePickupPElement.classList.remove('invisible');
 
+    tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить';
     tooltipSubmitElement.childNodes[2].classList.add('invisible');
     tooltipSubmitElement.childNodes[3].data = '';
-    tooltipSubmitElement.childNodes[5].data = ' и проверить правильность выбора адреса самовывоза ';
+    tooltipSubmitElement.childNodes[4].classList.remove('invisible');
+
+    tooltipSubmitElement.childNodes[5].data = ' И проверить правильность выбора адреса самовывоза ';
     tooltipSubmitElement.childNodes[6].classList.add('invisible');
+
+
+    pic = 1;
+    deliv = 0;
+
+    payCard = 0;
+    payCash = 0;
+
+    self.phone();
 
     this.setStyleLabelElement(checkedMethodElement, currentMethodCheckedElement);
 
@@ -144,6 +186,7 @@ var GetGood = function(elem) {
   //Обработчик события выбора пункта Доставка по городу в меню способа получения товара
   this.delivery = function(checkedMethodElement) {
 
+
     sectionElement.childNodes[3].classList.remove('invisible');
     sectionElement.childNodes[1].classList.add('invisible');
 
@@ -152,10 +195,25 @@ var GetGood = function(elem) {
     phoneDeliveryPElement.classList.remove('invisible');
     phonePickupPElement.classList.add('invisible');
 
+    tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить';
     tooltipSubmitElement.childNodes[2].classList.remove('invisible');
-    tooltipSubmitElement.childNodes[3].data = ', и ';
-    tooltipSubmitElement.childNodes[5].data = ', ну, ';
+    tooltipSubmitElement.childNodes[3].data = ' и ';
+    tooltipSubmitElement.childNodes[5].data = '  Ну, и неплохо бы ';
     tooltipSubmitElement.childNodes[6].classList.remove('invisible');
+
+    pic = 0;
+    deliv = 1;
+
+    payCard = 1;
+    payCash = 0;
+
+    self.phone();
+
+    self.cardInputTooltip();
+
+    self.addressInput();
+
+
 
     this.setStyleLabelElement(checkedMethodElement, currentMethodCheckedElement);
 
@@ -165,6 +223,7 @@ var GetGood = function(elem) {
 
     return currentMethodCheckedElement;
   };
+
 
 
   //Обработчик события выбора адреса самовывоза в меню адресов самовывоза
@@ -187,8 +246,10 @@ var GetGood = function(elem) {
   };
 
 
+
   //Обработчик события выбора пункта Карта в меню способа оплаты товара
   this.card = function(checkCardElement) {
+
 
     cardNumberElement.classList.remove('invisible');
 
@@ -196,10 +257,27 @@ var GetGood = function(elem) {
 
     currentCardCheckedElement = checkCardElement;
 
+    tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+
+    tooltipSubmitElement.childNodes[5].data = '  Ну, и неплохо бы ';
+    tooltipSubmitElement.childNodes[6].classList.remove('invisible');
+
+    pic = 0;
+    deliv = 1;
+    payCard = 1;
+    payCash = 0;
+
+    self.phone();
+
+    self.cardInputTooltip();
+
+    self.addressInput();
+
     console.log('Карта');
 
     return currentCardCheckedElement;
   };
+
 
 
   //Обработчик события выбора пункта Наличными курьеру в меню способа оплаты товара
@@ -213,8 +291,23 @@ var GetGood = function(elem) {
 
     console.log('Наличными курьеру');
 
+
+    tooltipSubmitElement.childNodes[5].data = '';
+    tooltipSubmitElement.childNodes[6].classList.add('invisible');
+
+
+    pic = 0;
+    deliv = 1;
+    payCard = 0;
+    payCash = 1;
+
+
+    self.phone();
+    self.addressInput();
+
     return currentCardCheckedElement;
   };
+
 
 
   //Обработчик событий нажатия стрелок влево и вправо для установки фокуса на элементах меню
@@ -278,48 +371,215 @@ var GetGood = function(elem) {
 
 
 
+
   //Обработчик события выбора элемента label, соответствующего полю телефона
   this.phoneSetFocus = function() {
     phoneElement.focus();
   };
 
-  //Метод, убирающий, или восстанавливающий подсказку и доступность кнопки отправки данных в зависимости от того введен или нет телефон
+
+
+
+//Метод, убирающий, или восстанавливающий подсказки в зависимости от того начат, или нет ввод алреса
+  this.addressInput = function() {
+    if (addressElement.value.trim() !== '') {
+
+        tooltipSubmitElement.childNodes[2].classList.add('invisible');
+
+        addressTooltipElement.classList.add('invisible');
+
+        delete tooltipInput.addr;
+
+        if (payCard === 1) {
+
+          if ((tooltipInput.tel === undefined) && (tooltipInput.car === undefined)) {
+
+             tooltipSubmitElement.childNodes[0].data = '';
+
+          } else {
+
+            tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+            buttonSubmitElement.disabled = true;
+          }
+
+        } else {  // payCard === 0
+
+          if (!("tel" in tooltipInput)) {
+
+            tooltipSubmitElement.childNodes[0].data = '';
+
+          } else {
+
+            tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+            buttonSubmitElement.disabled = true;
+          }
+
+        }
+
+    } else {
+
+        tooltipSubmitElement.childNodes[2].classList.remove('invisible');
+
+        addressTooltipElement.classList.remove('invisible');
+        buttonSubmitElement.disabled = true;
+
+        tooltipInput.addr = 0;
+        tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+
+    }
+
+  };
+
+
+
+  //Метод, убирающий, или восстанавливающий подсказку в зависимости от того введен или нет телефон
   this.phone = function() {
     if (phoneElement.value.trim() !== '') {
-      tooltipSubmitElement.classList.add('invisible');
-      buttonSubmitElement.disabled = false;
+
+      if (pic === 1) {
+
+        tooltipSubmitElement.childNodes[4].classList.add('invisible');
+
+        tooltipSubmitElement.childNodes[5].data = '';
+
+        delete tooltipInput.tel;
+
+        tooltipSubmitElement.childNodes[0].data = '';
+
+      } else { //pic === 0
+
+        tooltipSubmitElement.childNodes[4].classList.add('invisible');
+        tooltipSubmitElement.childNodes[3].data = '';
+
+        delete tooltipInput.tel;
+
+        if (payCard === 1) {
+
+          if ((tooltipInput.addr === undefined) && (tooltipInput.car === undefined)) {
+
+            tooltipSubmitElement.childNodes[0].data = '';
+
+          } else {
+
+            tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+            buttonSubmitElement.disabled = true;
+          }
+
+        } else {  // payCard === 0
+
+          if (!("addr" in tooltipInput)) {
+
+            tooltipSubmitElement.childNodes[0].data = '';
+
+          } else {
+
+            tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+            buttonSubmitElement.disabled = true;
+          }
+
+        }
+      }
+
     } else {
-      tooltipSubmitElement.classList.remove('invisible');
+
+      if (pic === 1) {
+
+        tooltipSubmitElement.childNodes[4].classList.remove('invisible');
+
+        tooltipSubmitElement.childNodes[5].data = ' И проверить правильность выбора адреса самовывоза ';
+
+
+        tooltipInput.tel = 0;
+        tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить';
+
+        buttonSubmitElement.disabled = true;
+
+      } else {
+
+        tooltipSubmitElement.childNodes[4].classList.remove('invisible');
+        tooltipSubmitElement.childNodes[3].data = ' и ';
+
+        tooltipInput.tel = 0;
+        tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+
+        buttonSubmitElement.disabled = true;
+
+      }
+
+    }
+
+  };
+
+
+
+//Метод, убирающий, или восстанавливающий подсказку в зависимости от того был или нет начат ввод номера карты
+  this.cardInputTooltip = function() {
+
+    if (card1Element.value.length !== 0) {
+
+      tooltipSubmitElement.childNodes[5].data = '';
+      tooltipSubmitElement.childNodes[6].classList.add('invisible');
+
+      delete tooltipInput.car;
+
+      if ((tooltipInput.addr === undefined) && (tooltipInput.tel === undefined)) {
+
+        tooltipSubmitElement.childNodes[0].data = '';
+
+      } else {
+
+
+        tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+        buttonSubmitElement.disabled = true;
+      }
+
+    } else {
+
+      tooltipSubmitElement.childNodes[5].data = '  Ну, и неплохо бы ';
+      tooltipSubmitElement.childNodes[6].classList.remove('invisible');
+
+      tooltipInput.car = 0;
+      console.log(tooltipInput);
+
+      tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
       buttonSubmitElement.disabled = true;
+
     }
+
   };
 
 
-  //Обработчик события ввода номера карты
+
+ //Обработчик события ввода номера карты
   this.cardPay = function(cardElement) {
+
+    if (cardElement === card1Element) {
+
+      self.cardInputTooltip();
+    }
+
     if (cardElement.value.length === 4 && cardElement.getAttribute('id') !== 'card-4') {
       var indexCard = cardInputArr.indexOf(cardElement);
       cardInputArr[indexCard + 1].focus();
     }
   };
 
-  //Обработчик события ввода номера карты
-  this.cardPay = function(cardElement) {
-    if (cardElement.value.length === 4 && cardElement.getAttribute('id') !== 'card-4') {
-      var indexCard = cardInputArr.indexOf(cardElement);
-      cardInputArr[indexCard + 1].focus();
-    }
-  };
+
 
   //Обработчик события удаления символа в номере карты с помощью backspace
   this.cardBackspace = function(cardElement) {
+
+    if (cardElement === card1Element) {
+
+      self.cardInputTooltip();
+    }
+
     if (cardElement.value.length === 0 && cardElement.getAttribute('id') !== 'card-1') {
       var indexCard = cardInputArr.indexOf(cardElement);
       cardInputArr[indexCard - 1].focus();
     }
   };
 
-  var self = this;
 
 
 
@@ -492,6 +752,7 @@ var GetGood = function(elem) {
     }
 
     switch(e.keyCode) {
+
       case 13: //Enter
         self.elemOnEventClick(e);
         break;
@@ -501,17 +762,18 @@ var GetGood = function(elem) {
         if (eTarget !== sliderHandleElement) {
           self.arrowPress(eTarget, 'left');
         } else {
-          //console.log(eTarget);
+
           self.arrowPressSlider('left');
         }
         break;
 
       case 39: //стрелка вправо
 
+
         if (eTarget !== sliderHandleElement) {
           self.arrowPress(eTarget, 'right');
         } else {
-          //console.log(eTarget);
+
           self.arrowPressSlider('right');
         }
         break;
@@ -530,7 +792,7 @@ var GetGood = function(elem) {
   };
 
 
-  //Функция, вызываюшая обработчики обытия Input
+  //Функция, вызываюшая обработчики события Input
   this.elemOnEventInput = function(e) {
 
     inputCheckElement = e.target;
@@ -539,8 +801,14 @@ var GetGood = function(elem) {
     var action; //переменная, в которую заносится название обработчика события выбора
     if (inputCheckElement.classList.contains('card-section')) {
       action = 'cardPay';
-    } else {
+    }
+
+    if (inputCheckElement === phoneElement) {
       action = 'phone';
+    }
+
+    if (inputCheckElement === addressElement) {
+      action = 'addressInput';
     }
 
     if (action) {
@@ -553,13 +821,13 @@ var GetGood = function(elem) {
   //Функция определения кооржинат для ползуна слайдера
   this.getCoords = function(el) { // кроме IE8-
     var box = el.getBoundingClientRect();
-    //console.log(pageXOffset);
 
     return {
       top: box.top + pageYOffset,
       left: box.left + pageXOffset
     };
   };
+
 
 
   //Обработчик события mousedown при нажатии кнопки мыши на ползуне слайдера
@@ -587,9 +855,6 @@ var GetGood = function(elem) {
      var sliderCoords = self.getCoords(sliderElement);
     //  вычесть координату родителя, т.к. position: relative
     var newLeft = e.pageX - shiftX - sliderCoords.left;
-    //console.log(e.pageX);
-    //console.log(sliderCoords.left);
-    //console.log(shiftX);
 
     // курсор ушёл вне слайдера
     if (newLeft < 0) {
@@ -657,12 +922,12 @@ var GetGood = function(elem) {
   };
 
 
+
   //Обработчик события mouseup при прекращении движения ползуна слайдера
   this.elemOnEventMouseSliderUp = function() {
     shiftX = null;
     sliderHandleElement.blur();
   };
-
 
 
 
@@ -695,9 +960,13 @@ var GetGood = function(elem) {
 };
 
 
+
+
 var actionSet = new GetGood(containerLayoutElement);
 
 actionSet.pickup(checkedPickupElement);
 actionSet.addrpickup(checkedPickupAddrElement);
 var focusFirstElement = actionSet.findLabelElement(checkedPickupElement);
 focusFirstElement.focus();
+
+
