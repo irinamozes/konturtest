@@ -1,0 +1,17 @@
+{
+  "name": "konturtest",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Тестовое задание",
+  "author": "Ирина Мозес",
+  "devDependencies": {
+    "eslint": "^2.4.0",
+    "browser-cookies": "1.0.3"
+  },
+  "scripts": {
+    "test": "eslint build/js"
+  },
+  "engines": {
+    "node": "^5.0.0"
+  }
+}
