@@ -1,4 +1,6 @@
 'use strict';
+var bodyElement = document.querySelector('body');
+
 var containerLayoutElement = document.querySelector('#layout');
 
 var sectionElement = document.querySelector('section');
@@ -7,6 +9,8 @@ var addressTooltipElement = document.querySelector('#tooltip');
 
 var checkedPickupElement = document.querySelector('input[name = "delivery-method"]:checked');
 var checkedPickupAddrElement = document.querySelector('input[name = "pickup-point"]:checked');
+
+var labelDataElement = document.querySelector('label[for = "date"]');
 
 var cardNumberElement = document.querySelector('.card');
 var cardInputElement = document.querySelectorAll('.card-section');
@@ -45,14 +49,13 @@ var timeToInputElement = document.querySelector('#time-to');
 
 var sliderElement = document.querySelector('.time-slider');
 var sliderHandleElement = document.querySelector('.time-slider-handle');
-
-var inputSliderSize = timeFromInputElement.getBoundingClientRect();
-var sliderCoords = sliderElement.getBoundingClientRect();
+var oldLeft = 0; //Левая координата ползуна слайдера относительно родителя
+sliderHandleElement.style.left = '0' + 'px';
 
 var shiftX = null; //Переменная, показывающая была нажата кнопка мыши на ползуне слайдера, или нет.
 
-var cooordIntervalSlider = inputSliderSize.width / 36; //Интервал приращения горизонтальной координаты ползуна слайдера при его перемещении с помощью клавиатуры
-console.log(cooordIntervalSlider);
+var deliveryMaxInterval = 9; //Максимальное количество часов интервала доставки
+
 
 var phoneElement = document.querySelector('#phone');
 var phoneDeliveryPElement = document.querySelector('.phone-description-delivery');
@@ -318,6 +321,8 @@ var GetGood = function(elem) {
 
   var self = this;
 
+
+
   //Функция, вызывающая обработчики события выбора различных элементов формы с помощью клика
   this.elemOnEventClick = function(e) {
 
@@ -353,29 +358,128 @@ var GetGood = function(elem) {
   };
 
 
+
   //Обработчик событий передвижения ползуна слайдера с помощью клавиатуры
   this.arrowPressSlider = function(directArrow) {
 
-    var sliderHandleCoords = self.getCoords(sliderHandleElement);
-    //var oldLeft = parseInt(sliderHandleCoords, 10) - parseInt(sliderCoords.left, 10);
-    var oldLeft = sliderHandleCoords.left - sliderCoords.left;
-    //console.log(parseInt(sliderHandleCoords.left, 10));
-    //console.log(parseInt(sliderCoords.left, 10));
-    console.log(oldLeft);
-    //var leftSlider = oldLeft + cooordIntervalSlider;
+    if (timeFromInputElement.value === '08:00') {
 
-    if(directArrow === 'left') {
-      sliderHandleElement.style.left = (oldLeft - cooordIntervalSlider) + 'px';
-      console.log(sliderHandleElement);
-      timeFromInputElement.value = oldLeft - cooordIntervalSlider;
-    } else {
-      sliderHandleElement.style.left = (oldLeft + cooordIntervalSlider) + 'px';
-      console.log(sliderHandleElement);
-      timeFromInputElement.value = oldLeft + cooordIntervalSlider;
+      sliderHandleElement.style.left = '0' + 'px';
+
     }
 
 
+    window.onscroll = self.onScrollWindow;
+
+    var inputSliderSize = timeFromInputElement.getBoundingClientRect();
+
+    var sliderCoordsW = sliderElement.getBoundingClientRect();
+
+    //Интервал приращения горизонтальной координаты ползуна слайдера при его перемещении      с помощью клавиатуры, соответствующий 15-ти минутам
+    var cooordIntervalSlider;
+
+    var sliderHandleCoords = self.getCoords(sliderHandleElement);
+
+    oldLeft = parseInt(sliderHandleElement.style.left, 10);
+
+    var oldValue = timeFromInputElement.value;
+
+    var oldValueHours = oldValue.substring(0,2);
+    var oldValueMinutes = oldValue.substring(3);
+
+    var oldMinutes = parseInt(oldValueHours, 10) * 60 + parseInt(oldValueMinutes, 10);
+
+    var newMinutes;
+
+    //Кол-во шагов, которые осталось пройти до начала, или конца максимального интервала  времени доставки
+    var newSteps;
+
+    var newValue;
+
+    var newLeftSlider;
+
+    if (directArrow === 'left') {
+
+
+       newSteps = Math.round((oldMinutes - 480) / 15);
+
+       cooordIntervalSlider = Math.ceil(oldLeft / newSteps);
+
+       newLeftSlider =  oldLeft - cooordIntervalSlider;
+
+       newMinutes = oldMinutes - 15;
+
+
+       if (newLeftSlider < 0) {
+
+        newLeftSlider = 0;
+
+      }
+
+
+      if (newMinutes <= 480) {
+        newLeftSlider = 0;
+        newMinutes = 480;
+      }
+
+      if (oldValue === 480) {
+        newLeftSlider = 0;
+        newMinutes = 480;
+      }
+
+
+    } else {
+
+
+      newSteps = Math.round((deliveryMaxInterval * 60 + 480 - oldMinutes) / 15);
+
+      cooordIntervalSlider = Math.ceil((sliderCoordsW.width - oldLeft) / newSteps);
+
+     newLeftSlider =  oldLeft + cooordIntervalSlider;
+
+     newMinutes = oldMinutes + 15;
+
+
+     if (newLeftSlider > sliderCoordsW.width) {
+
+        newLeftSlider = sliderCoordsW.width;
+      }
+
+
+      if (newMinutes >= 1020) {
+        newLeftSlider = sliderCoordsW.width;
+        newMinutes = 1020;
+      }
+
+      if (oldValue === 1020) {
+        newLeftSlider = sliderCoordsW.width;
+        newMinutes = 1020;
+      }
+
+   }
+
+    sliderHandleElement.style.left = newLeftSlider + 'px';
+
+    var timeFromInputHours = Math.floor(newMinutes / 60);
+
+    var timeFromInputMinutes = (newMinutes - timeFromInputHours * 60);
+
+    if (timeFromInputHours < 10) {
+
+      timeFromInputHours = '0' + timeFromInputHours;
+    }
+
+    if (timeFromInputMinutes === 0) {
+
+      timeFromInputMinutes = '00';
+    }
+
+     timeFromInputElement.value = timeFromInputHours + ':' + timeFromInputMinutes;
+
+     timeToInputElement.value = (parseInt(timeFromInputHours, 10) + 2) + ':' + timeFromInputMinutes;
+
   };
+
 
 
   //Функция, вызывающая обработчики события выбора элемента формы  с помощью нажатия Enter, или установки фокуса с помощью клавишь <- и ->
@@ -397,7 +501,7 @@ var GetGood = function(elem) {
         if (eTarget !== sliderHandleElement) {
           self.arrowPress(eTarget, 'left');
         } else {
-          console.log(eTarget);
+          //console.log(eTarget);
           self.arrowPressSlider('left');
         }
         break;
@@ -426,7 +530,7 @@ var GetGood = function(elem) {
   };
 
 
-  //Функция, вызывающая обработчики события выбора различных элементов формы с помощью клика
+  //Функция, вызываюшая обработчики обытия Input
   this.elemOnEventInput = function(e) {
 
     inputCheckElement = e.target;
@@ -464,9 +568,7 @@ var GetGood = function(elem) {
     var sliderHandleCoords = self.getCoords(sliderHandleElement);
 
     shiftX = e.pageX - sliderHandleCoords.left;
-    //console.log(e.pageX);
-    //console.log(sliderHandleCoords.left);
-    //console.log(shiftX);
+
     sliderHandleElement.focus();
 
     return shiftX;
@@ -476,10 +578,13 @@ var GetGood = function(elem) {
   //Обработчик события mousemove при движении мыши на родителе ползуна слайдера
   this.elemOnEventMouseSliderMove = function(e) {
 
+    var inputSliderSize = timeFromInputElement.getBoundingClientRect();
+
     if (shiftX === null) {
       return;
     }
 
+     var sliderCoords = self.getCoords(sliderElement);
     //  вычесть координату родителя, т.к. position: relative
     var newLeft = e.pageX - shiftX - sliderCoords.left;
     //console.log(e.pageX);
@@ -560,12 +665,28 @@ var GetGood = function(elem) {
 
 
 
+
+  //Обработчик события scroll при движении ползуна слайдера с помощью клавиатуры
+  this.onScrollWindow = function() {
+
+    if (document.activeElement === sliderHandleElement) {
+      window.scrollTo(0,0);
+      labelDataElement.scrollIntoView(true);
+    } else {
+      return;
+    }
+  }
+
+
+
   elem.onclick = self.elemOnEventClick;
   elem.oninput = self.elemOnEventInput;
   elem.onkeydown = self.elemOnEventKeyboard;
   sliderHandleElement.onmousedown = self.elemOnEventMouseSliderDown;
   sliderElement.onmousemove = self.elemOnEventMouseSliderMove;
   elem.onmouseup = self.elemOnEventMouseSliderUp;
+
+  //window.onscroll = self.onScrollWindow;
 
   sliderHandleElement.ondragstart = function() {
     return false;

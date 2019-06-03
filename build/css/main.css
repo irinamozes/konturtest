@@ -3,7 +3,8 @@ body {
 }
 
 body {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: "Roboto";
+  overflow: auto;
 }
 
 .invisible {
@@ -41,7 +42,7 @@ label {
 
 input,
 button {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: "Roboto";
   font-size: 1em;
 }
 
@@ -132,14 +133,14 @@ div[role=radiogroup] label:last-of-type {
 #time-to {
   width: 7.2em;
   text-align: center;
+
 }
 
 .time-slider {
   display: inline-block;
   position: relative;
-  border: solid 1px;
+  border: solid 1px transparent;
   height: 55px;
-  width: 8.2em;
 
 }
 
@@ -150,10 +151,10 @@ div[role=radiogroup] label:last-of-type {
   bottom: 0px;
   cursor: move;
   height: 0px;
-  left: 0;
+  left: 20px;
   position: absolute;
-  transform: translate(-10px, -2px);
   width: 0px;
+  transform: translate(-12px, -7px);
 }
 
 div.payment {
