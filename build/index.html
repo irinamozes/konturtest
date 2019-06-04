@@ -53,7 +53,7 @@
 
         
         <fieldset class="group">
-          <label for="date" tabindex="-1`">Дата доставки</label>         
+          <label for="date" tabindex="-1">Дата доставки</label>         
           <input type="text" id="date" name="date" value="23/08/1988">
         </fieldset>
 
@@ -62,7 +62,7 @@
           <div class="time-slider">
             <input type="text" value= "08:00"id="time-from" name="time-from" readonly>
             <div class="time-slider-handle" tabindex="0"></div>
-          </div>—&nbsp;
+          </div>&nbsp—&nbsp;
           <input type="text" value="10:00" id="time-to" name="time-to" readonly>
         </fieldset>
 
@@ -77,7 +77,7 @@
         </div>
 
         <fieldset class="card">
-          <label for="card-1" tabindex="0">Номер карты</label>
+          <label for="card-1" tabindex="-1">Номер карты</label>
 
           <input type="hidden" name="credit-card" required>
 
@@ -90,7 +90,7 @@
     </section>
 
     <fieldset class="group phone">
-      <label for="phone" >Телефон</label>
+      <label for="phone" tabindex="-1" >Телефон</label>
       <input type="phone" id="phone" name="phone" tabindex="0">
       <p class="phone-description phone-description-pickup">Товар на складе привязывается к номеру телефона, поэтому его нужно будет назвать при выдаче.
       <p class="phone-description phone-description-delivery">Телефон нужен для того, чтобы курьер мог связаться с вами, когда товар будет доставлен.
