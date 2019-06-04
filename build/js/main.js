@@ -1,4 +1,5 @@
 'use strict';
+
 var bodyElement = document.querySelector('body');
 
 var containerLayoutElement = document.querySelector('#layout');
@@ -7,6 +8,7 @@ var formElement = document.querySelector('form');
 
 var sectionElement = document.querySelector('section');
 
+var addressElement = document.querySelector('#address');
 
 var addressTooltipElement = document.querySelector('#tooltip');
 
@@ -30,7 +32,6 @@ var addressElement = document.querySelector('#address');
 var labelDataElement = document.querySelector('label[for = "date"]');
 
 var dateElement = document.querySelector('#date');
-//<div class="tooltip" id="tooltip" style="float: right;" >Пожалуйста, укажите адрес</div>
 
 var today = new Date();
 var dayFromToday = new Date(today.getTime() + 24 * 60 * 60 * 1000);
@@ -45,7 +46,7 @@ if (month < 10 ) {
 }
 
 var year = dayFromToday.getFullYear();
-var valueDateDefault = date + '/' + month + '/' + year;
+var valueDateDefault = date + '/' + month + '/' + year;  
 dateElement.setAttribute('value', valueDateDefault);
 
 var datErrorCreateElement = document.createElement('div');
@@ -90,10 +91,11 @@ carErrorCreateElement.textContent = 'Ошибка: в номере карты д
 carErrorCreateElement.classList.add('invisible');
 
 
+var methoDelivElement = document.querySelector('#delivery-2');
+
 var methodMenuElement = document.querySelectorAll('label[for*="delivery"]');
 var addrPickupMenuElement = document.querySelectorAll('label[for*="pickup-point"]');
 var paymentMenuElement = document.querySelectorAll('label[for*="payment"]');
-
 
 var methodMenuArr = Array.prototype.slice.call(methodMenuElement, 0);
 var lengthMethodMenu = methodMenuArr.length;
@@ -124,7 +126,7 @@ var timeToInputElement = document.querySelector('#time-to');
 
 var sliderElement = document.querySelector('.time-slider');
 var sliderHandleElement = document.querySelector('.time-slider-handle');
-var oldLeft = 0; //Левая координата ползуна слайдера относительно родителя
+var oldLeft = 0; //Левая координата ползуна слайдера относительно родителя 
 sliderHandleElement.style.left = '0' + 'px';
 
 var shiftX = null; //Переменная, показывающая была нажата кнопка мыши на ползуне слайдера, или нет.
@@ -190,11 +192,12 @@ validBlur.dat = 0;
 
 
 
+
 //Конструктор объекта-контейнера с id = #layout, которому делегируются все события.
 
 var GetGood = function(elem) {
 
-   var self = this;
+   var self = this;   
 
 
   //Метод для нахождения элемента Input по соответствующему ему элементу Label
@@ -237,8 +240,7 @@ var GetGood = function(elem) {
 
 
   //Обработчик события выбора пункта Самовывоз в меню способа получения товара
-  this.pickup = function(checkedMethodElement) {
-
+  this.pickup = function(checkedMethodElement) {    
 
     buttonSubmitElement.disabled = true;
 
@@ -249,11 +251,11 @@ var GetGood = function(elem) {
     phoneDeliveryPElement.classList.add('invisible');
     phonePickupPElement.classList.remove('invisible');
 
-    tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить';
+    tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить'; 
     tooltipSubmitElement.childNodes[2].classList.add('invisible');
     tooltipSubmitElement.childNodes[3].data = '';
-    tooltipSubmitElement.childNodes[4].classList.remove('invisible');
-
+    tooltipSubmitElement.childNodes[4].classList.remove('invisible'); 
+     
     tooltipSubmitElement.childNodes[5].data = ' И проверить правильность выбора адреса самовывоза ';
     tooltipSubmitElement.childNodes[6].classList.add('invisible');
 
@@ -264,14 +266,14 @@ var GetGood = function(elem) {
     payCard = 0;
     payCash = 0;
 
-    self.buttonSubmitEnabl();
+    self.buttonSubmitEnabl(); 
 
-    self.phone();
+    self.phone();     
 
     self.telValidOnBlur();
+ 
 
-
-    this.setStyleLabelElement(checkedMethodElement, currentMethodCheckedElement);
+    self.setStyleLabelElement(checkedMethodElement, currentMethodCheckedElement);
 
     currentMethodCheckedElement = checkedMethodElement;
 
@@ -283,8 +285,7 @@ var GetGood = function(elem) {
 
 
   //Обработчик события выбора пункта Доставка по городу в меню способа получения товара
-  this.delivery = function(checkedMethodElement) {
-
+  this.delivery = function(checkedMethodElement) {    
 
     sectionElement.childNodes[3].classList.remove('invisible');
     sectionElement.childNodes[1].classList.add('invisible');
@@ -296,10 +297,10 @@ var GetGood = function(elem) {
 
     tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить';
     tooltipSubmitElement.childNodes[2].classList.remove('invisible');
-    tooltipSubmitElement.childNodes[3].data = ' и ';
+    tooltipSubmitElement.childNodes[3].data = ' и ';      
     tooltipSubmitElement.childNodes[5].data = '  Ну, и неплохо бы ';
     tooltipSubmitElement.childNodes[6].classList.remove('invisible');
-
+    
     pic = 0;
     deliv = 1;
 
@@ -315,17 +316,17 @@ var GetGood = function(elem) {
     self.addressInput();
 
     self.telValidOnBlur();
-
+ 
     self.addrValidOnBlur();
-
+ 
     self.datValidOnBlur();
-
+ 
     self.carValidOnEnter();
 
     self.carValidOnInput();
+ 
 
-
-    this.setStyleLabelElement(checkedMethodElement, currentMethodCheckedElement);
+    self.setStyleLabelElement(checkedMethodElement, currentMethodCheckedElement);
 
     currentMethodCheckedElement = checkedMethodElement;
 
@@ -346,8 +347,8 @@ var GetGood = function(elem) {
     var labelPointElement = document.querySelector(labelSelector);
     addressPickup = labelPointElement.textContent;
     pCreateElement.innerHTML = '<strong>Адрес самовывоза: </strong>' + addressPickup;
-
-    this.setStyleLabelElement(checkedAddrElement, currentPickupAddrCheckedElement);
+    
+    self.setStyleLabelElement(checkedAddrElement, currentPickupAddrCheckedElement);
 
     currentPickupAddrCheckedElement = checkedAddrElement;
 
@@ -359,7 +360,7 @@ var GetGood = function(elem) {
 
   //Обработчик события выбора пункта Карта в меню способа оплаты товара
   this.card = function(checkCardElement) {
-
+  
 
     cardNumberElement.classList.remove('invisible');
 
@@ -376,7 +377,7 @@ var GetGood = function(elem) {
     deliv = 1;
     payCard = 1;
     payCash = 0;
-
+    
     self.buttonSubmitEnabl();
 
     self.phone();
@@ -384,16 +385,16 @@ var GetGood = function(elem) {
     self.cardInputTooltip();
 
     self.addressInput();
-
+    
     self.telValidOnBlur();
-
+ 
     self.addrValidOnBlur();
-
+ 
     self.datValidOnBlur();
-
+ 
     self.carValidOnEnter();
-
-
+ 
+  
 
     console.log('Карта');
 
@@ -412,7 +413,7 @@ var GetGood = function(elem) {
     currentCardCheckedElement = checkCardElement;
 
     console.log('Наличными курьеру');
-
+    
 
     tooltipSubmitElement.childNodes[5].data = '';
     tooltipSubmitElement.childNodes[6].classList.add('invisible');
@@ -424,16 +425,18 @@ var GetGood = function(elem) {
     payCash = 1;
 
 
-    self.buttonSubmitEnabl();
+    //self.buttonSubmitEnabl();
 
     self.phone();
-    self.addressInput();
+    self.addressInput(); 
 
     self.telValidOnBlur();
-
+ 
     self.addrValidOnBlur();
-
+ 
     self.datValidOnBlur();
+
+    self.buttonSubmitEnabl();
 
     return currentCardCheckedElement;
   };
@@ -512,9 +515,9 @@ var GetGood = function(elem) {
   this.addressInput = function() {
     if (addressElement.value.trim() !== '') {
 
-      addrErrorCreateElement.classList.add('invisible');
-
-      tooltipSubmitElement.childNodes[2].classList.add('invisible');
+      addrErrorCreateElement.classList.add('invisible'); 
+      
+      tooltipSubmitElement.childNodes[2].classList.add('invisible'); 
 
       addressTooltipElement.classList.add('invisible');
 
@@ -522,45 +525,45 @@ var GetGood = function(elem) {
 
       if (payCard === 1) {
 
-        if ((tooltipInput.tel === undefined) && (tooltipInput.car === undefined)) {
-
+        if ((tooltipInput.tel === undefined) && (tooltipInput.car === undefined)) {  
+        
           tooltipSubmitElement.childNodes[0].data = '';
-
+        
         } else {
-
+           
           tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
-          buttonSubmitElement.disabled = true;
+          buttonSubmitElement.disabled = true; 
         }
 
       } else {  // payCard === 0
 
-        if (!("tel" in tooltipInput)) {
-
+        if (!("tel" in tooltipInput)) {  
+        
           tooltipSubmitElement.childNodes[0].data = '';
-
+        
         } else {
 
           tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
-          buttonSubmitElement.disabled = true;
-        }
+          buttonSubmitElement.disabled = true; 
+        } 
 
-      }
-
+      } 
+   
     } else {
 
-      tooltipSubmitElement.childNodes[2].classList.remove('invisible');
-
+      tooltipSubmitElement.childNodes[2].classList.remove('invisible'); 
+     
       addressTooltipElement.classList.remove('invisible');
       buttonSubmitElement.disabled = true;
 
       tooltipInput.addr = 0;
 
-      validBlur.addr = 0;
+      validBlur.addr = 0;      
 
       tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
-
+           
     }
-
+  
   };
 
 
@@ -570,68 +573,68 @@ var GetGood = function(elem) {
     if (phoneElement.value.trim() !== '') {
 
       telErrorCreateElement.classList.add('invisible');
-
+      
       if (pic === 1) {
-
-        tooltipSubmitElement.childNodes[4].classList.add('invisible');
-
+        
+        tooltipSubmitElement.childNodes[4].classList.add('invisible'); 
+     
         tooltipSubmitElement.childNodes[5].data = '';
 
         delete tooltipInput.tel;
 
-        tooltipSubmitElement.childNodes[0].data = '';
+        tooltipSubmitElement.childNodes[0].data = '';  
 
       } else { //pic === 0
 
         tooltipSubmitElement.childNodes[4].classList.add('invisible');
-        tooltipSubmitElement.childNodes[3].data = '';
+        tooltipSubmitElement.childNodes[3].data = '';      
 
         delete tooltipInput.tel;
 
         if (payCard === 1) {
 
-          if ((tooltipInput.addr === undefined) && (tooltipInput.car === undefined)) {
-
+          if ((tooltipInput.addr === undefined) && (tooltipInput.car === undefined)) {          
+        
             tooltipSubmitElement.childNodes[0].data = '';
-
+        
           } else {
 
             tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
-            buttonSubmitElement.disabled = true;
+            buttonSubmitElement.disabled = true; 
           }
 
         } else {  // payCard === 0
 
-          if (!("addr" in tooltipInput)) {
-
+          if (!("addr" in tooltipInput)) {  
+        
             tooltipSubmitElement.childNodes[0].data = '';
-
+        
           } else {
 
             tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
-            buttonSubmitElement.disabled = true;
-          }
+            buttonSubmitElement.disabled = true; 
+          } 
 
-        }
-      }
+        } 
+      }     
 
     } else {
 
       if (pic === 1) {
-
-        tooltipSubmitElement.childNodes[4].classList.remove('invisible');
-
+        
+        tooltipSubmitElement.childNodes[4].classList.remove('invisible'); 
+     
         tooltipSubmitElement.childNodes[5].data = ' И проверить правильность выбора адреса самовывоза ';
 
-
+        
         tooltipInput.tel = 0;
 
-        validBlur.tel = 0;
+        validBlur.tel = 0;        
 
         tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить';
 
-        buttonSubmitElement.disabled = true;
-
+        buttonSubmitElement.disabled = true; 
+      
       } else {
 
         tooltipSubmitElement.childNodes[4].classList.remove('invisible');
@@ -642,12 +645,12 @@ var GetGood = function(elem) {
 
         tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
 
-        buttonSubmitElement.disabled = true;
+        buttonSubmitElement.disabled = true;       
 
       }
-
+           
     }
-
+  
   };
 
 
@@ -655,7 +658,7 @@ var GetGood = function(elem) {
 //Метод, убирающий, или восстанавливающий подсказку в зависимости от того был или нет начат ввод номера карты
   this.cardInputTooltip = function() {
 
-     carErrorCreateElement.classList.add('invisible');
+     carErrorCreateElement.classList.add('invisible'); 
 
     if (card1Element.value.length !== 0) {
 
@@ -665,18 +668,18 @@ var GetGood = function(elem) {
       tooltipSubmitElement.childNodes[6].classList.add('invisible');
 
       delete tooltipInput.car;
-
+ 
       if ((tooltipInput.addr === undefined) && (tooltipInput.tel === undefined)) {
-
+      
         tooltipSubmitElement.childNodes[0].data = '';
-
+        
       } else {
 
 
         tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
-        buttonSubmitElement.disabled = true;
+        buttonSubmitElement.disabled = true; 
       }
-
+      
     } else {
 
       tooltipSubmitElement.childNodes[5].data = '  Ну, и неплохо бы ';
@@ -686,21 +689,21 @@ var GetGood = function(elem) {
       validBlur.car = 0;
 
       tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
-      buttonSubmitElement.disabled = true;
-
+      buttonSubmitElement.disabled = true; 
+             
     }
 
   };
-
+ 
 
 
  //Обработчик события ввода номера карты
   this.cardPay = function(cardElement) {
-
+    
     self.cardInputTooltip();
 
     self.carValidOnInput();
-
+    
 
     if (cardElement.value.length === 4 && cardElement.getAttribute('id') !== 'card-4') {
       var indexCard = cardInputArr.indexOf(cardElement);
@@ -717,49 +720,80 @@ var GetGood = function(elem) {
 
       self.cardInputTooltip();
     }
-
+ 
     if (cardElement.value.length === 0 && cardElement.getAttribute('id') !== 'card-1') {
       var indexCard = cardInputArr.indexOf(cardElement);
       cardInputArr[indexCard - 1].focus();
     }
   };
 
-
-
-
+  
+  
   //Функция, вызывающая обработчики события выбора различных элементов формы с помощью клика
   this.elemOnEventClick = function(e) {
 
     var target = e.target;
+ 
+    if (target === buttonSubmitElement) {
+      console.log('заказ принят');
 
-    //if (target === buttonSubmitElement) {
-      //console.log('заказ принят');
+      //Объект для отправки данных в формате json, если выбрана доставка по городу
+      var jsonDeliv = {};
+
+      //Объект для отправки данных в формате json, если выбран самовывоз
+      var jsonPickup = {};
 
 
-      //if (pic === 0) {
-        //pic = 0;
-        //deliv = 1;
+      if (pic === 0) {
 
-        //formElement.reset();
-        //buttonSubmitElement.disabled = true;
+        buttonSubmitElement.disabled = true;
 
-        //self.delivery(inputCheckElement);
+        buttonSubmitElement.blur();
 
-      //} else {
+          jsonDeliv.addr = addressElement.value;
+          jsonDeliv.tel = phoneElement.value;
+          jsonDeliv.dat = dateElement.value;
+          jsonDeliv.timeFrom = timeFromInputElement.value;
+          jsonDeliv.timeTo = timeToInputElement.value;
 
-        //phoneElement.value = '';
+        if (payCard === 1) {
 
-        //buttonSubmitElement.disabled = true;
+          jsonDeliv.car = cardHiddenElement.value;
 
-        //self.pickup(checkedPickupElement);
-        //self.addrpickup(checkedPickupAddrElement);
+        } 
 
-      //}
+        var jsonDel = JSON.stringify(jsonDeliv);
 
-      //return;
+        formElement.reset();
 
-    //}
-//buttonSubmitElement
+        methoDelivElement.setAttribute('checked', 'true');
+
+        self.delivery(methoDelivElement);
+
+      } else { 
+
+        buttonSubmitElement.disabled = true;
+
+        buttonSubmitElement.blur();
+
+        jsonPickup.tel = phoneElement.value; 
+
+        jsonPickup.addr = addressPickup;
+
+        var jsonPic = JSON.stringify(jsonPickup);
+
+        console.log(jsonPic);
+
+        phoneElement.value = ''; 
+
+        self.pickup(checkedPickupElement);
+        self.addrpickup(checkedPickupAddrElement);
+
+      } 
+
+      return; 
+
+    }
 
    if (target.hasAttribute('for')) {
       labelTargetElement = target;
@@ -798,15 +832,15 @@ var GetGood = function(elem) {
 
     if (!e.altKey || !e.shiftKey) {
       return;
-    }
+    } 
 
-
+    
     if (timeFromInputElement.value === '08:00') {
-
+     
       sliderHandleElement.style.left = '0' + 'px';
-
-    }
-
+             
+    } 
+    
 
     window.onscroll = self.onScrollWindow;
 
@@ -816,9 +850,9 @@ var GetGood = function(elem) {
 
     //Интервал приращения горизонтальной координаты ползуна слайдера при его перемещении      с помощью клавиатуры, соответствующий 15-ти минутам
     var cooordIntervalSlider;
-
+ 
     var sliderHandleCoords = self.getCoords(sliderHandleElement);
-
+    
     oldLeft = parseInt(sliderHandleElement.style.left, 10);
 
     var oldValue = timeFromInputElement.value;
@@ -828,47 +862,47 @@ var GetGood = function(elem) {
 
     var oldMinutes = parseInt(oldValueHours, 10) * 60 + parseInt(oldValueMinutes, 10);
 
-    var newMinutes;
+    var newMinutes; 
 
     //Кол-во шагов, которые осталось пройти до начала, или конца максимального интервала  времени доставки
     var newSteps;
-
+    
     var newValue;
 
     var newLeftSlider;
-
+ 
     if (directArrow === 'left') {
 
-
+       
        newSteps = Math.round((oldMinutes - 480) / 15);
-
+       
        cooordIntervalSlider = Math.ceil(oldLeft / newSteps);
-
+        
        newLeftSlider =  oldLeft - cooordIntervalSlider;
 
        newMinutes = oldMinutes - 15;
 
 
        if (newLeftSlider < 0) {
-
+     
         newLeftSlider = 0;
-
+            
       }
 
 
       if (newMinutes <= 480) {
         newLeftSlider = 0;
         newMinutes = 480;
-      }
+      } 
 
       if (oldValue === 480) {
         newLeftSlider = 0;
-        newMinutes = 480;
-      }
-
-
+        newMinutes = 480;     
+      }    
+      
+      
     } else {
-
+      
 
       newSteps = Math.round((deliveryMaxInterval * 60 + 480 - oldMinutes) / 15);
 
@@ -880,7 +914,7 @@ var GetGood = function(elem) {
 
 
      if (newLeftSlider > sliderCoordsW.width) {
-
+   
         newLeftSlider = sliderCoordsW.width;
       }
 
@@ -888,17 +922,17 @@ var GetGood = function(elem) {
       if (newMinutes >= 1020) {
         newLeftSlider = sliderCoordsW.width;
         newMinutes = 1020;
-      }
+      } 
 
-      if (oldValue === 1020) {
+      if (oldValue === 1020) { 
         newLeftSlider = sliderCoordsW.width;
-        newMinutes = 1020;
-      }
-
+        newMinutes = 1020;     
+      }    
+               
    }
-
+    
     sliderHandleElement.style.left = newLeftSlider + 'px';
-
+      
     var timeFromInputHours = Math.floor(newMinutes / 60);
 
     var timeFromInputMinutes = (newMinutes - timeFromInputHours * 60);
@@ -911,8 +945,8 @@ var GetGood = function(elem) {
     if (timeFromInputMinutes === 0) {
 
       timeFromInputMinutes = '00';
-    }
-
+    }   
+      
      timeFromInputElement.value = timeFromInputHours + ':' + timeFromInputMinutes;
 
      timeToInputElement.value = (parseInt(timeFromInputHours, 10) + 2) + ':' + timeFromInputMinutes;
@@ -921,24 +955,32 @@ var GetGood = function(elem) {
 
 
 
-  //Функция, вызывающая обработчики события выбора элемента формы  с помощью нажатия Enter, или установки фокуса с помощью клавиш <- и ->
+  //Функция, вызывающая обработчики события выбора элемента формы  с помощью нажатия Enter, или установки фокуса с помощью клавишь <- и ->
   this.elemOnEventKeyboard = function(e) {
 
     var eTarget = e.target;
 
     switch(e.keyCode) {
-
+      
       case 13: //Enter
+
+         if (eTarget === buttonSubmitElement) {
+
+           self.elemOnEventClick(e);
+
+           return;
+
+         }
 
         if (eTarget.type === 'text') {
 
           if (eTarget.className !== "card-section") {
 
             eTarget.blur();
-
+             
             return;
 
-          } else {
+          } else {  
 
             self.carValidOnEnter();
 
@@ -947,10 +989,10 @@ var GetGood = function(elem) {
           }
 
         } else {
-
+ 
           self.elemOnEventClick(e);
         }
-
+        
         break;
 
       case 37: //стрелка влево
@@ -963,7 +1005,7 @@ var GetGood = function(elem) {
         if (eTarget !== sliderHandleElement) {
           self.arrowPress(eTarget, 'left');
         } else {
-
+          
           self.arrowPressSlider(e, 'left');
         }
         break;
@@ -973,11 +1015,11 @@ var GetGood = function(elem) {
         if (eTarget === phoneElement) {
           return;
         }
-
+        
         if (eTarget !== sliderHandleElement) {
           self.arrowPress(eTarget, 'right');
         } else {
-
+ 
           self.arrowPressSlider(e, 'right');
         }
         break;
@@ -1006,7 +1048,7 @@ var GetGood = function(elem) {
     var action; //переменная, в которую заносится название обработчика события выбора
     if (inputCheckElement.classList.contains('card-section')) {
       action = 'cardPay';
-    }
+    } 
 
     if (inputCheckElement === phoneElement) {
       action = 'phone';
@@ -1031,7 +1073,7 @@ var GetGood = function(elem) {
   //Функция определения кооржинат для ползуна слайдера
   this.getCoords = function(el) { // кроме IE8-
     var box = el.getBoundingClientRect();
-
+    
     return {
       top: box.top + pageYOffset,
       left: box.left + pageXOffset
@@ -1046,7 +1088,7 @@ var GetGood = function(elem) {
     var sliderHandleCoords = self.getCoords(sliderHandleElement);
 
     shiftX = e.pageX - sliderHandleCoords.left;
-
+    
     sliderHandleElement.focus();
 
     return shiftX;
@@ -1064,7 +1106,7 @@ var GetGood = function(elem) {
      var sliderCoords = self.getCoords(sliderElement);
     //  вычесть координату родителя, т.к. position: relative
     var newLeft = e.pageX - shiftX - sliderCoords.left;
-
+ 
     // курсор ушёл вне слайдера
     if (newLeft < 0) {
       newLeft = 0;
@@ -1137,25 +1179,25 @@ var GetGood = function(elem) {
     shiftX = null;
     sliderHandleElement.blur();
   };
-
+  
 
 
   //Обработчик события scroll при движении ползуна слайдера с помощью клавиатуры
   this.onScrollWindow = function() {
-
+    
     if (document.activeElement === sliderHandleElement) {
       window.scrollTo(0,0);
       labelDataElement.scrollIntoView(true);
-    } else {
+    } else { 
       return;
-    }
-  };
+    } 
+  }; 
 
 
 
   //Функция, блокирующая, или разблокирующая кнопку "Заказать" в зависимости от того валидны, или нет введенные поля. Вызывается в методах проверки валидности полей при потере ими фокуса.
   this.buttonSubmitEnabl = function() {
-
+          
     if (pic === 1) {
 
       if (validBlur.tel === undefined) {
@@ -1168,9 +1210,9 @@ var GetGood = function(elem) {
 
         buttonSubmitElement.disabled = true;
 
-      }
-
-
+      } 
+  
+        
     } else { //pic === 0
 
 
@@ -1181,11 +1223,11 @@ var GetGood = function(elem) {
           buttonSubmitElement.disabled = false;
 
           buttonSubmitElement.scrollIntoView(true);  //При разблокировании кнопки "Заказать" экран прокручивается к ней.
-
+        
         } else {
 
           buttonSubmitElement.disabled = true;
-
+   
         }
 
       } else {  // payCard === 0
@@ -1195,18 +1237,18 @@ var GetGood = function(elem) {
           buttonSubmitElement.disabled = false;
 
           buttonSubmitElement.scrollIntoView(true);  //При разблокировании кнопки "Заказать" экран прокручивается к ней.
-
+        
         } else {
 
           buttonSubmitElement.disabled = true;
 
         }
-
+ 
 
       }
-
+           
     }
-
+  
   };
 
 
@@ -1218,7 +1260,7 @@ var GetGood = function(elem) {
 
       return;
 
-    }
+    } 
 
     var valid = /(\w+)+|([А-Яа-я0-9]+)+/.test(addressElement.value);
 
@@ -1226,22 +1268,22 @@ var GetGood = function(elem) {
 
 
     if (valid && !validNot) {
-
+      
       delete validBlur.addr;
 
-      addrErrorCreateElement.classList.add('invisible');
+      addrErrorCreateElement.classList.add('invisible'); 
 
       self.buttonSubmitEnabl();
 
     } else {
-
+     
       validBlur.addr = 0;
 
       addrErrorCreateElement.classList.remove('invisible');
 
-      self.buttonSubmitEnabl();
+      self.buttonSubmitEnabl(); 
 
-    }
+    } 
 
   };
 
@@ -1255,13 +1297,13 @@ var GetGood = function(elem) {
       validBlur.dat = 0;
       return;
 
-     }
-
+     } 
+ 
     var dateInputObject = new Date();
 
     var ddInput = dateElement.value.substring(0,2);
 
-    ddInput = parseInt(ddInput, 10);
+    ddInput = parseInt(ddInput, 10); 
 
     var mmInput = dateElement.value.substring(3,5);
 
@@ -1279,8 +1321,8 @@ var GetGood = function(elem) {
 
       return;
 
-    }
-
+    } 
+    
     var valid = /^(\d{2}\/\d{2}\/\d{4})$/.test(dateElement.value);
 
     if (!valid) {
@@ -1295,7 +1337,7 @@ var GetGood = function(elem) {
       return;
     }
 
-    if (dateInputObject.getTime() >= today.getTime() + 24 * 60 * 60 * 1000 && dateInputObject.getTime() < today.getTime() + 8 * 24 * 60 * 60 * 1000)  {
+    if (dateInputObject.getTime() >= today.getTime() + 24 * 60 * 60 * 1000 && dateInputObject.getTime() < today.getTime() + 8 * 24 * 60 * 60 * 1000)  { 
 
       delete validBlur.dat;
 
@@ -1305,14 +1347,14 @@ var GetGood = function(elem) {
       self.buttonSubmitEnabl();
 
     } else {
-
+     
       validBlur.dat = 0;
-
+ 
       datErrorCreateElement.classList.remove('invisible');
 
-      self.buttonSubmitEnabl();
+      self.buttonSubmitEnabl(); 
 
-    }
+    } 
 
   };
 
@@ -1326,7 +1368,7 @@ var GetGood = function(elem) {
 
       return;
 
-    }
+    } 
 
     var valid = /(\w+)+|([А-Яа-я0-9]+)+/.test(phoneElement.value);
 
@@ -1343,14 +1385,14 @@ var GetGood = function(elem) {
       self.buttonSubmitEnabl();
 
     } else {
-
+     
       validBlur.tel = 0;
 
       telErrorCreateElement.classList.remove('invisible');
 
-     self.buttonSubmitEnabl();
+     self.buttonSubmitEnabl(); 
 
-    }
+    } 
 
   };
 
@@ -1365,8 +1407,8 @@ var GetGood = function(elem) {
 
        var cDigit = cardHiddenElement.value.charAt(n);
 
-       nDigit = parseInt(cDigit, 10);
-
+       nDigit = parseInt(cDigit, 10);  
+     
        if (bEven) {
 
          if ((nDigit *= 2) > 9) {
@@ -1380,7 +1422,7 @@ var GetGood = function(elem) {
 
        bEven = !bEven;
 
-     }
+     }  
 
      cardMod10 = nCheck % 10;
 
@@ -1397,7 +1439,7 @@ var GetGood = function(elem) {
 
     cardHiddenElement.value = cardBlurArr[0].value + cardBlurArr[1].value + cardBlurArr[2].value + cardBlurArr[3].value;
 
-    self.carValid();
+    self.carValid();   
 
   };
 
@@ -1413,15 +1455,15 @@ var GetGood = function(elem) {
     if (cardHiddenElement.value.trim().length !== 16)  {
 
       validBlur.car = 0;
-
-      self.buttonSubmitEnabl();
+ 
+      self.buttonSubmitEnabl(); 
 
       return;
 
     } else {
 
       self.carValid();
-
+   
     }
 
   };
@@ -1429,22 +1471,22 @@ var GetGood = function(elem) {
 
 
 //Функция, проверяющая валидность введенного номера карты с использованием алгоритма Луна. Скрывает, или показывает сообщение об ошибке. ВЫзывает функцию, блокирующую, или разблокирующую кнопку "Заказать".
-  this.carValid = function() {
+  this.carValid = function() { 
 
     var cardHiddenValid = cardHiddenElement.value.search(/[^0-9]/);
 
     if (cardHiddenValid !== -1)  {
 
       validBlur.car = 0;
-
+ 
       carErrorCreateElement.classList.remove('invisible');
 
-      self.buttonSubmitEnabl();
+      self.buttonSubmitEnabl(); 
 
       return
     }
 
-    self.cardLuhnValid();
+    self.cardLuhnValid(); 
 
     if (cardMod10 === 0)  {
 
@@ -1455,14 +1497,14 @@ var GetGood = function(elem) {
       self.buttonSubmitEnabl();
 
     } else {
-
+     
       validBlur.car = 0;
-
+ 
       carErrorCreateElement.classList.remove('invisible');
 
-      self.buttonSubmitEnabl();
+      self.buttonSubmitEnabl(); 
 
-    }
+    } 
 
   };
 
@@ -1474,14 +1516,14 @@ var GetGood = function(elem) {
   sliderHandleElement.onmousedown = self.elemOnEventMouseSliderDown;
   sliderElement.onmousemove = self.elemOnEventMouseSliderMove;
   elem.onmouseup = self.elemOnEventMouseSliderUp;
-
+ 
   phoneElement.onblur = self.telValidOnBlur;
   addressElement.onblur = self.addrValidOnBlur;
   dateElement.onblur = self.datValidOnBlur;
 
-  //formElement.onsubmit = function() {
-    //return false;
-  //};
+  formElement.onsubmit = function() {
+    return false;
+  };
 
   sliderHandleElement.ondragstart = function() {
     return false;
