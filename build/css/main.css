@@ -224,9 +224,9 @@ div.payment {
   color: #fff;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
   font-size: 0.8em;
-  padding: 10px;
-  padding-top: 7px;
-  padding-bottom: 7px;
+  padding: 15px;
+  padding-top: 3px;
+  padding-bottom: 3px;
   /* position: absolute; */
   width: 200px;
 }

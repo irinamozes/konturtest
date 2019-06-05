@@ -2,71 +2,103 @@
 
 var bodyElement = document.querySelector('body');
 
+var legendElement = document.querySelector('legend');
+
 var containerLayoutElement = document.querySelector('#layout');
 
 var formElement = document.querySelector('form');
 
 var sectionElement = document.querySelector('section');
 
-var addressElement = document.querySelector('#address');
-
-var addressTooltipElement = document.querySelector('#tooltip');
-
-var addrErrorCreateElement = document.createElement('div');
-
-var parentAddrElement = addressTooltipElement.parentNode;
-
-parentAddrElement.insertBefore(addrErrorCreateElement, addressTooltipElement);
-
-addrErrorCreateElement.setAttribute('style', 'color: red');
-
-addrErrorCreateElement.textContent = 'Ошибка: в адресе должны быть буквенно-цифровые символы (буквы латинские или русские), не должно быть символов, указанных в квадратных скобках: [\\\/\'\"@<>;:&%!?+].';
-
-addrErrorCreateElement.classList.add('invisible');
 
 var checkedPickupElement = document.querySelector('input[name = "delivery-method"]:checked');
 var checkedPickupAddrElement = document.querySelector('input[name = "pickup-point"]:checked');
 
+
+//Функция, создающая элемент для показа сообщения об ошибке ввода и др.
+var displayMes = function(currentFormElement, createMesElement, errorTooltipMes, colorMes, clName) {
+
+  var parentElement = currentFormElement.parentNode;
+
+  parentElement.insertBefore(createMesElement, currentFormElement);
+
+  if (createMesElement !== datTooltipTemplateElement) {
+
+    createMesElement.style.color = colorMes;
+
+  } else {
+
+    createMesElement.setAttribute('style', 'float: right;');
+
+  }
+
+  createMesElement.classList.add(clName);
+
+  createMesElement.textContent = errorTooltipMes;
+
+  return createMesElement;
+
+}
+
+
 var addressElement = document.querySelector('#address');
+
+//Создание элемента, который будет содержать сообщение об ошибке ввода адреса доставки
+var addrErrorCreateElement = document.createElement('div');
+
+var addrErrorMes = 'Ошибка: в адресе должны быть буквенно-цифровые символы (буквы латинские или русские), не должно быть символов, указанных в квадратных скобках: [\\\/\'\"@<>;:&%!?+].';
+
+displayMes(addressElement, addrErrorCreateElement, addrErrorMes, 'red', 'invisible');
+
+var addressTooltipElement = document.querySelector('#tooltip');
+
 
 var labelDataElement = document.querySelector('label[for = "date"]');
 
 var dateElement = document.querySelector('#date');
 
-var today = new Date();
-var dayFromToday = new Date(today.getTime() + 24 * 60 * 60 * 1000);
-var date = dayFromToday.getDate();
-if (date < 10 ) {
-  date = '0' + date;
+//Создание элемента, который будет содержать сообщение об ошибке ввода даты доставки
+var datErrorCreateElement  = document.createElement('div');;
+
+var datErrorMes = 'Ошибка: указывать можно только будущие даты, дата доставки должна отстоять не дальше чем на неделю от сегодняшнего дня, либо дата введена по неправильному шаблону.';
+
+displayMes(dateElement, datErrorCreateElement, datErrorMes, 'red', 'invisible');
+
+//Переменная, для даты доставки по умолчанию
+  var valueDateDefault;
+
+//Функция, вычисляющая дату завтрашнего дня для даты доставки по умолчанию
+var calcDateDefault = function () {
+
+  var today = new Date();
+  var dayFromToday = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+  var date = dayFromToday.getDate();
+  if (date < 10 ) {
+    date = '0' + date;
+  }
+
+  var month = dayFromToday.getMonth() + 1;
+  if (month < 10 ) {
+    month = '0' + month;
+  }
+
+  var year = dayFromToday.getFullYear();
+  valueDateDefault = date + '/' + month + '/' + year;
+
+  return valueDateDefault;
+
 }
 
-var month = dayFromToday.getMonth() + 1;
-if (month < 10 ) {
-  month = '0' + month;
-}
+calcDateDefault();
 
-var year = dayFromToday.getFullYear();
-var valueDateDefault = date + '/' + month + '/' + year;
 dateElement.setAttribute('value', valueDateDefault);
 
-var datErrorCreateElement = document.createElement('div');
-
-var parentDatElement = dateElement.parentNode;
-
-parentDatElement.insertBefore(datErrorCreateElement, dateElement);
-
-datErrorCreateElement.setAttribute('style', 'color: red');
-
-datErrorCreateElement.textContent = 'Ошибка: указывать можно только будущие даты, дата доставки должна отстоять не дальше чем на неделю от сегодняшнего дня, либо дата введена по неправильному шаблону.';
-datErrorCreateElement.classList.add('invisible');
-
+//Создание элемента, который будет показывать шаблон ввода даты доставки
 var datTooltipTemplateElement = document.createElement('div');
-parentDatElement.insertBefore(datTooltipTemplateElement, labelDataElement);
 
-datTooltipTemplateElement.setAttribute('style', 'float: right;');
+var datTooltipTemplateMes = 'Шаблон ввода даты: ДД/ММ/ГГГГ';
 
-datTooltipTemplateElement.textContent = 'Шаблон ввода даты: ДД/ММ/ГГГГ';
-datTooltipTemplateElement.classList.add('tooltip');
+displayMes(dateElement, datTooltipTemplateElement, datTooltipTemplateMes, '', 'tooltip');
 
 
 var cardMod10; //переменная для результата проверки по алгоритму Луна.
@@ -79,16 +111,27 @@ var cardInputArr = Array.prototype.slice.call(cardInputElement, 0);
 
 var card1Element = document.querySelector('#card-1');
 
+//Создание элемента, который будет содержать сообщение об ошибке ввода номера карты
 var carErrorCreateElement = document.createElement('div');
 
-var parentCarElement = card1Element.parentNode;
+var carErrorMes = 'Ошибка: в номере карты должны быь только цифры, либо введены неправильные цифры.';
 
-parentCarElement.insertBefore(carErrorCreateElement, card1Element);
+displayMes(card1Element, carErrorCreateElement, carErrorMes, 'red', 'invisible');
 
-carErrorCreateElement.setAttribute('style', 'color: red');
 
-carErrorCreateElement.textContent = 'Ошибка: в номере карты должны быь только цифры, либо введены неправильные цифры.';
-carErrorCreateElement.classList.add('invisible');
+var phoneDeliveryPElement = document.querySelector('.phone-description-delivery');
+
+var phonePickupPElement = document.querySelector('.phone-description-pickup');
+
+
+var phoneElement = document.querySelector('#phone');
+
+//Создание элемента, который будет содержать сообщение об ошибке ввода номера телефона
+var telErrorCreateElement = document.createElement('div');
+
+ var telErrorMes = 'Ошибка: в тлефоне должны быть буквенно-цифровые символы (буквы латинские или русские), не должно быть символов, указанных в квадратных скобках: [\\\/\'\"@<>;:&%!?].';
+
+displayMes(phoneElement, telErrorCreateElement, telErrorMes, 'red', 'invisible');
 
 
 var methoDelivElement = document.querySelector('#delivery-2');
@@ -133,25 +176,15 @@ var shiftX = null; //Переменная, показывающая была н�
 
 var deliveryMaxInterval = 9; //Максимальное количество часов интервала доставки
 
-var parentPhoneElement = document.querySelector('.phone');
-
-var phoneElement = document.querySelector('#phone');
-
-var phoneDeliveryPElement = document.querySelector('.phone-description-delivery');
-
-var phonePickupPElement = document.querySelector('.phone-description-pickup');
-
-var telErrorCreateElement = document.createElement('div');
-
-parentPhoneElement.insertBefore(telErrorCreateElement, phoneElement);
-
-telErrorCreateElement.setAttribute('style', 'color: red');
-
-telErrorCreateElement.textContent = 'Ошибка: в тлефоне должны быть буквенно-цифровые символы (буквы латинские или русские), не должно быть символов, указанных в квадратных скобках: [\\\/\'\"@<>;:&%!?].';
-telErrorCreateElement.classList.add('invisible');
 
 var containerSubmitElement = document.querySelector('.submit');
+
 var buttonSubmitElement = containerSubmitElement.childNodes[1];
+
+//Элемент для вывода на экран сообщения сервера
+var serverResponseCreateElement = document.createElement('h3');
+//formElement.insertBefore(serverResponseCreateElement, containerSubmitElement);
+
 var tooltipSubmitElement = containerSubmitElement.childNodes[3];
 
 tooltipSubmitElement.childNodes[4].setAttribute('for', 'phone');
@@ -187,7 +220,6 @@ validBlur.addr = 0;
 validBlur.tel = 0;
 validBlur.car = 0;
 validBlur.dat = 0;
-
 
 
 
@@ -393,8 +425,6 @@ var GetGood = function(elem) {
     self.datValidOnBlur();
 
     self.carValidOnEnter();
-
-
 
     console.log('Карта');
 
@@ -741,73 +771,7 @@ var GetGood = function(elem) {
     if (target === buttonSubmitElement) {
       console.log('заказ принят');
 
-      //Объект для данных формы, если выбрана доставка по городу
-      var jsonDeliv = {};
-
-      //Объект для  данных  формы, если выбран самовывоз
-      var jsonPickup = {};
-
-      //Переменная для данных, отправляемых на сервер в формате json
-      var jsonOrder;
-
-      if (pic === 0) {
-
-        buttonSubmitElement.disabled = true;
-
-        buttonSubmitElement.blur();
-
-        var timeFrom = "time-from";
-
-        var timeTo = "time-to";
-
-        var creditCard = "credit-card"
-
-        jsonDeliv.address = addressElement.value;
-        jsonDeliv.phone = phoneElement.value;
-        jsonDeliv.date = dateElement.value;
-        jsonDeliv[timeFrom] = timeFromInputElement.value;
-        jsonDeliv[timeTo] = timeToInputElement.value;
-
-        if (payCard === 1) {
-
-          jsonDeliv[creditCard] = cardHiddenElement.value;
-
-        }
-
-
-        jsonOrder = JSON.stringify(jsonDeliv);
-
-        console.log(jsonOrder);
-
-
-        formElement.reset();
-
-        sliderHandleElement.style.left = '0' + 'px';
-
-        methoDelivElement.setAttribute('checked', 'true');
-
-        self.delivery(methoDelivElement);
-
-      } else {
-
-        buttonSubmitElement.disabled = true;
-
-        buttonSubmitElement.blur();
-
-        jsonPickup. phone = phoneElement.value;
-
-        jsonPickup.address = addressPickup;
-
-        jsonOrder = JSON.stringify(jsonPickup);
-
-        console.log(jsonOrder);
-
-        phoneElement.value = '';
-
-        self.pickup(checkedPickupElement);
-        self.addrpickup(checkedPickupAddrElement);
-
-      }
+      self.runOrder();
 
       return;
 
@@ -839,8 +803,14 @@ var GetGood = function(elem) {
     }
 
     if (action) {
+
+      console.log(action);
+
       self[action](inputCheckElement);
+
     }
+
+
   };
 
 
@@ -848,7 +818,8 @@ var GetGood = function(elem) {
   //Обработчик событий передвижения ползуна слайдера с помощью клавиатуры
   this.arrowPressSlider = function(e, directArrow) {
 
-    if (!e.altKey || !e.shiftKey) {
+
+  if (!e.altKey || !e.shiftKey) {
       return;
     }
 
@@ -1332,6 +1303,7 @@ var GetGood = function(elem) {
 
 //Функция, проверяющая валидность введенной даты при нажатии Enter на поле ввода даты доставки, или при потери фокуса элементом ввода даты, а так же при первоначальной загрузке страницы. Скрывает, или показывает сообщение об ошибке. ВЫзывает функцию, блокирующую, или разблокирующую кнопку "Заказать".
   this.datValidOnBlur = function() {
+    var today = new Date();
 
     if (dateElement.value.trim() === '') {
 
@@ -1573,19 +1545,125 @@ var GetGood = function(elem) {
 
 
 
-  this.carBlur = function() {
+//Функция, вызываемая приотправке формы.
+  this.runOrder = function() {
 
-    if (document.activeElement.className === "card-section") {
 
-      console.log(document.activeElement);
+    //Объект для данных формы, если выбрана доставка по городу
+    var jsonDeliv = {};
+
+    //Объект для  данных  формы, если выбран самовывоз
+    var jsonPickup = {};
+
+    //Переменная для данных, отправляемых на сервер в формате json
+    var jsonOrder;
+
+    if (pic === 0) {
+
+      buttonSubmitElement.disabled = true;
+
+      buttonSubmitElement.blur();
+
+      var timeFrom = "time-from";
+
+      var timeTo = "time-to";
+
+      var creditCard = "credit-card"
+
+      jsonDeliv.address = addressElement.value;
+      jsonDeliv.phone = phoneElement.value;
+      jsonDeliv.date = dateElement.value;
+      jsonDeliv[timeFrom] = timeFromInputElement.value;
+      jsonDeliv[timeTo] = timeToInputElement.value;
+
+      if (payCard === 1) {
+
+        jsonDeliv[creditCard] = cardHiddenElement.value;
+
+      }
+
+
+      jsonOrder = JSON.stringify(jsonDeliv);
+
+      formElement.reset();
+
+      sliderHandleElement.style.left = '0' + 'px';
+
+      methoDelivElement.setAttribute('checked', 'true');
+
+      self.delivery(methoDelivElement);
+
 
     } else {
 
-      console.log('uuuuuuuu');
+      buttonSubmitElement.disabled = true;
+
+      buttonSubmitElement.blur();
+
+      jsonPickup.phone = phoneElement.value;
+
+      jsonPickup.address = addressPickup;
+
+      jsonOrder = JSON.stringify(jsonPickup);
+
+      phoneElement.value = '';
+
+      self.pickup(checkedPickupElement);
+      self.addrpickup(checkedPickupAddrElement);
 
     }
 
-  }
+    var xhr = new XMLHttpRequest();
+
+    xhr.onload = function(evt) {
+
+      if ( xhr.status === 200) {
+
+        var serverResMes = 'Заявка принята!';
+
+        displayMes(containerSubmitElement, serverResponseCreateElement, serverResMes, 'green');
+
+      } else {
+
+        var serverResMes = xhr.responseText;
+
+        displayMes(containerSubmitElement, serverResponseCreateElement, serverResMes, 'red');
+
+
+      }
+
+      var timeout;
+
+      //Переменная для количества секунд, в течении которого будет виден ответ сервера
+      var timeSeconds;
+
+
+      if ( xhr.status === 200) {
+
+        timeSeconds = 1000;
+
+      } else {
+
+        timeSeconds = 5000;
+
+      }
+
+
+      timeout = setTimeout(function(){
+
+        serverResponseCreateElement.textContent = '';
+
+        legendElement.scrollIntoView(true);
+
+      }, timeSeconds);
+
+    };
+
+    xhr.open('POST', '/', true);
+
+    xhr.send(jsonOrder);
+
+  };
 
 
 
@@ -1629,5 +1707,4 @@ actionSet.datValidOnBlur();
 
 var focusFirstElement = actionSet.findLabelElement(checkedPickupElement);
 focusFirstElement.focus();
-
 
