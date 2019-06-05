@@ -18,7 +18,7 @@ module.exports = {
   output: {
     filename: 'js/main.js',
     path: path.resolve(projectRoot, OUTPUT_DIRNAME),
-    outputPath: '/',
+//    outputPath: '/',
     sourceMapFilename: "[file].map"
   }
 };
