@@ -244,6 +244,7 @@ div.payment {
 }
 
 
+/* Стили для label и button при установке на них фокуса с помощью клавиши Tab или стрелок */
 label:focus {
   border: solid 2px !important;
 

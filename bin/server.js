@@ -1,23 +1,25 @@
 'use strict'
 
-var express = require('express');
+const express = require('express');
 
-//const webpack = require('webpack');
-//const webpackConfig = require('./webpack.config');
-
-var app = express();
+const app = express();
 
 const serverStatic = express.static;
 
 app.use(serverStatic('build'));
 
-const serverStat = serverStatic('build', {
+const webpack = require('webpack');
+const webpackConfig = require('./webpack.config');
+const webpackMiddleware = require('webpack-dev-middleware');
+const webpackMiddlewareConfig = require('./middleware.config.js');
+
+const serverStat = serverStatic(webpackConfig.devServer.contentBase, {
   'index': ['index.html', 'index.htm']
 });
 
-//const compiler = webpack(webpackConfig);
-//const middleware = webpackMiddleware(compiler, webpackMiddlewareConfig);
-//app.use(compiler);
+const compiler = webpack(webpackConfig);
+const middleware = webpackMiddleware(compiler, webpackMiddlewareConfig);
+app.use(middleware);
 
 
 
@@ -26,7 +28,7 @@ app.
 
       var body = '';
 
-      var _end = 0; 
+      var _end = 0;
 
       req.on('data', function(data){
 
@@ -36,7 +38,7 @@ app.
 
           console.log(body.length);
 
-          var bodyObj = JSON.parse(body); 
+          var bodyObj = JSON.parse(body);
 
           if ( bodyObj.phone.length <2 || bodyObj.address.length <2  ) {
 
@@ -52,21 +54,21 @@ app.
 
           if (e.message === "Мало информации") {
 
-            res.status(400).send("Ошибка: Вы ввели слишком мало информации. Заявка не принята. Попробуйте снова."); 
+            res.status(400).send("Ошибка: Вы ввели слишком мало информации. Заявка не принята. Попробуйте снова.");
 
           } else {
 
-            res.status(500).send("Произошла непредвиденная ошибка. Заявка не принята. Попробуйте снова."); 
+            res.status(500).send("Произошла непредвиденная ошибка. Заявка не принята. Попробуйте снова.");
 
           }
-        
-        } 
 
-      });    
+        }
+
+      });
 
       req.on('end', function(){
 
-        if (_end === 0) { 
+        if (_end === 0) {
 
           console.log(_end);
 
@@ -74,13 +76,13 @@ app.
 
             'Cache-Control': 'no-cache'
 
-          }); 
+          });
 
-        } 
+        }
 
         res.end("Заявка принята");
 
-      });    
+      });
 
 
     }).
