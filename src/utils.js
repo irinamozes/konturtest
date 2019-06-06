@@ -2,37 +2,23 @@
 
 module.exports = {
 
-  //Функция, создающая элемент для показа сообщения об ошибке ввода, ответа сервера и др.
+  //Функция, создающая элемент для показа сообщения об ошибке ввода, подсказки, ответа сервера и др.
   displayMes: function(currentFormElement, createMesElement, errorTooltipMes, colorMes, floatMes, clName) {
 
     var parentElement = currentFormElement.parentNode;
-    //console.log(parentElement);
 
     parentElement.insertBefore(createMesElement, currentFormElement);
 
- //   if (createMesElement !== datTooltipTemplateElement) {
-
     createMesElement.style.color = colorMes;
 
-//    } else {
-
-//    createMesElement.setAttribute('style', 'float: right;');
-
     createMesElement.style.float = floatMes;
-
-//    }
 
     createMesElement.classList.add(clName);
 
     createMesElement.textContent = errorTooltipMes;
 
-    //return createMesElement;
-
   },
 
-
-//Переменная, для даты доставки по умолчанию
-//  var valueDateDefault;
 
 //Функция, вычисляющая дату завтрашнего дня для даты доставки по умолчанию
   calcDateDefault: function () {
@@ -128,8 +114,117 @@ module.exports = {
 
      return cardMod10;
 
+  }, 
+
+
+
+    //Функция, восстанавливающая вид подсказки для каждого поля формы при выборе различных пунктов меню.
+
+  pageViewInputTooltip: function(elementInputObj, tooltipSelectObj, buttonSubmitElement = undefined) {
+
+    if (tooltipSelectObj.tooltipInput['i' + elementInputObj.name] === undefined) {
+
+      tooltipSelectObj.tooltipSubmitElement.childNodes[elementInputObj.numberChildLabel].classList.add('invisible'); 
+
+      tooltipSelectObj.tooltipSubmitElement.childNodes[elementInputObj.numberChildText].data = '';
+
+      if (buttonSubmitElement !== undefined) {
+          buttonSubmitElement.disabled = true; 
+          tooltipSelectObj.tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+      } else {
+
+//        console.log(elementInputObj);
+        tooltipSelectObj.tooltipSubmitElement.childNodes[elementInputObj.numberChildText].data = '';
+        tooltipSelectObj.tooltipSubmitElement.childNodes[0].data = '';
+
+      }  
+
+    } else {
+
+      tooltipSelectObj.tooltipSubmitElement.childNodes[elementInputObj.numberChildLabel].classList.remove('invisible');
+
+      tooltipSelectObj.tooltipSubmitElement.childNodes[elementInputObj.numberChildText].data = elementInputObj.textValue;
+
+      tooltipSelectObj.tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+      tooltipSelectObj.validBlur['v' + elementInputObj.name] = 0;
+
+      if (buttonSubmitElement === undefined) {
+
+        tooltipSelectObj.tooltipSubmitElement.childNodes[elementInputObj.numberChildText].data = '';
+        tooltipSelectObj.validBlur['v' + elementInputObj.name] = 0;
+
+      }  
+
+    } 
+
+  },
+
+ 
+    //Функция, восстанавливающая вид подсказок при выборе различных пунктов меню.
+
+  pageViewInputTooltips: function(tooltipSelectObj, buttonSubmitElement, viewTooltipFunc) {
+
+    const addr = tooltipSelectObj.inputFieldsArr[0];
+    const car = tooltipSelectObj.inputFieldsArr[1];
+    const tel = tooltipSelectObj.inputFieldsArr[2];
+
+    if (tooltipSelectObj.selectMenu.pic === 1) {
+
+      viewTooltipFunc(tel, tooltipSelectObj);
+
+    } else { //pic === 0
+
+      if (tooltipSelectObj.selectMenu.payCard === 1) {
+
+        if ((tooltipSelectObj.tooltipInput.iaddr === undefined) && (tooltipSelectObj.tooltipInput.icar === undefined) && (tooltipSelectObj.tooltipInput.itel === undefined)) {          
+        
+          tooltipSelectObj.tooltipSubmitElement.childNodes[0].data = '';
+          tooltipSelectObj.tooltipSubmitElement.childNodes[2].classList.add('invisible');
+          tooltipSelectObj.tooltipSubmitElement.childNodes[3].data = '';
+          tooltipSelectObj.tooltipSubmitElement.childNodes[4].classList.add('invisible');
+          tooltipSelectObj.tooltipSubmitElement.childNodes[5].data = '';
+          tooltipSelectObj.tooltipSubmitElement.childNodes[6].classList.add('invisible');          
+        
+        } else {
+
+          tooltipSelectObj.tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+          buttonSubmitElement.disabled = true; 
+
+          viewTooltipFunc(tel, tooltipSelectObj, buttonSubmitElement);
+
+          viewTooltipFunc(car, tooltipSelectObj, buttonSubmitElement);
+
+          viewTooltipFunc(addr, tooltipSelectObj, buttonSubmitElement);
+
+        }
+
+      } else {  // payCard === 0
+
+         if ((tooltipSelectObj.tooltipInput.iaddr === undefined) && (tooltipSelectObj.tooltipInput.itel === undefined)) {          
+        
+          tooltipSelectObj.tooltipSubmitElement.childNodes[0].data = '';
+          tooltipSelectObj.tooltipSubmitElement.childNodes[2].classList.add('invisible');
+          tooltipSelectObj.tooltipSubmitElement.childNodes[3].data = '';
+          tooltipSelectObj.tooltipSubmitElement.childNodes[4].classList.add('invisible');
+          tooltipSelectObj.tooltipSubmitElement.childNodes[5].data = '';
+          tooltipSelectObj.tooltipSubmitElement.childNodes[6].classList.add('invisible');          
+
+        } else {
+
+          tooltipSelectObj.tooltipSubmitElement.childNodes[0].data = 'Осталось заполнить:';
+          buttonSubmitElement.disabled = true; 
+          
+          viewTooltipFunc(tel, tooltipSelectObj, buttonSubmitElement);
+
+          viewTooltipFunc(addr, tooltipSelectObj, buttonSubmitElement);
+
+        } 
+         
+      } // payCard === 1     
+
+    }
+             
   }
 
-
-
 };
+

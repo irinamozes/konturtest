@@ -16,6 +16,7 @@ const webpackMiddlewareConfig = require('./middleware.config.js');
 const serverStat = serverStatic(webpackConfig.devServer.contentBase, {
   'index': ['index.html', 'index.htm']
 });
+//const app = express();
 
 const compiler = webpack(webpackConfig);
 const middleware = webpackMiddleware(compiler, webpackMiddlewareConfig);
@@ -36,19 +37,55 @@ app.
 
           body += data;
 
-          console.log(body.length);
+          //console.log('leng ' + body.length);
 
           var bodyObj = JSON.parse(body);
 
-          if ( bodyObj.phone.length <2 || bodyObj.address.length <2  ) {
+          //console.log('pick ' + bodyObj.pick);
+//minValidLength       jsonPickup.pick = 1;jsonPickup.minLengthTel
 
-            throw new SyntaxError("Мало информации");
+          console.log('pickup ' + bodyObj.pick);
+
+              //console.log('phone ' + bodyObj.phone + bodyObj.phone.length);
+
+              //console.log('addr ' + bodyObj.address + bodyObj.address.length);
+
+
+
+          if ( bodyObj.pick === 0 ) {
+
+            console.log('pick = 0 ' + bodyObj.pick);
+
+              //console.log('phone ' + bodyObj.phone + bodyObj.phone.length);
+
+              //console.log('addr ' + bodyObj.addressPic + bodyObj.address.length);
+
+            if ( bodyObj.phone.length < 2 || bodyObj.address.length < 2 ) {
+
+              console.log('phone ' + bodyObj.phone + bodyObj.phone.length);
+
+              console.log('addr ' + bodyObj.address + bodyObj.address.length);
+
+              throw new SyntaxError("Мало информации");
+
+            }
+
+          } else {
+            console.log('pick ' + bodyObj.pick);
+            if ( bodyObj.phone.length < 2 ) {
+
+              console.log('pic ' + bodyObj.pick);
+
+              throw new SyntaxError("Мало информации");
+
+             }
 
           }
 
+
         } catch (e) {
 
-          console.log(e);
+          console.log('err ' + e);
 
           _end = 1;
 
@@ -70,7 +107,7 @@ app.
 
         if (_end === 0) {
 
-          console.log(_end);
+          console.log('noerr' + _end);
 
           res.writeHead(200, {
 
