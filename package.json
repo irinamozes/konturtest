@@ -1,8 +1,8 @@
 {
-  "name": "mysuccess",
+  "name": "konturtest",
   "version": "0.1.0",
   "private": true,
-  "description": "Личный проект «mysuccess» от HTML Academy",
+  "description": "Личный проект «konturtest» от HTML Academy",
   "author": "Ирина Мозес",
   "main": "server.js",
   "devDependencies": {
