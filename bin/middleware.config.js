@@ -1,4 +1,3 @@
-'use strict';
 
 let webpackConfig = require('./webpack.config.js');
 

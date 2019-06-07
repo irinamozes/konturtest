@@ -224,6 +224,17 @@ module.exports = {
 
     }
              
+  },
+
+
+  //Функция определения кооржинат для ползуна слайдера
+  getCoords: function(el) { // кроме IE8-
+    var box = el.getBoundingClientRect();
+    
+    return {
+      top: box.top + pageYOffset,
+      left: box.left + pageXOffset
+    }
   }
 
 };
