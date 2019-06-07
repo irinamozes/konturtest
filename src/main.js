@@ -1,16 +1,22 @@
-'use strict';
+// 'use strict';
 
 var utils = require('./utils');
 
-var menu_selection = require('./menu_selection');
+var menuSelection = require('./menu_selection');
 
-var arrow_press_menu_event = require('./arrow_press_menu_event');
+var arrowPressMenuEvent = require('./arrow_press_menu_event');
 
 var button_submit_enable_disable = require('./button_submit_enable_disable');
 
 var input_tooltips_hide_render = require('./input_tooltips_hide_render');
 
 var validation_addr_tel = require('./validation_addr_tel');
+
+var date_element = require('./date_element');
+
+var card_element = require('./card_element');
+
+var slider = require('./slider');
 
 var run_order = require('./run_order');
 
@@ -138,7 +144,6 @@ var containerSubmitElement = document.querySelector('.submit');
 
 var buttonSubmitElement = containerSubmitElement.childNodes[1];
 
-
 var tooltipSubmitElement = document.querySelector('.submit p');
 tooltipSubmitElement.childNodes[6].setAttribute('for', 'phone');
 tooltipSubmitElement.childNodes[2].setAttribute('for', 'address');
@@ -207,7 +212,6 @@ var checkedMenuElementsObj = {menuCheckElement, currentMethodCheckedElement, cur
 
 //Объект элементов, значения или состояния которых учитываются при обмене информацией с сервером, которые могут использоваться в качестве параметров функций
 var serverSendingElementsObj = {legendElement, formElement, sliderHandleElement, methodDelivElement, methodPickupElement, checkedPicAddrElement, addressTooltipElement, carTooltipElement, telTooltipElement, addressElement, phoneElement, dateElement, timeFromInputElement, timeToInputElement, cardHiddenElement}
-
 
 
 
@@ -291,7 +295,6 @@ var GetGood = function(elem) {
   };
 
 
-
   //Функция, вызывающая обработчики событий при работе с элементами формы с клавиатуры
   this.elemOnEventKeyboard = function(e) {
 
@@ -353,7 +356,9 @@ var GetGood = function(elem) {
 
         if (eTarget.type === 'radio') {
 
-          eTarget.click();
+          labelTargetElement = utils.findLabelElement(eTarget);
+
+          labelTargetElement.click();
 
         }
 
@@ -367,33 +372,33 @@ var GetGood = function(elem) {
 
       case 37: //стрелка влево
 
-        if (eTarget === phoneElement) {
+        if (eTarget === phoneElement || eTarget === addressElement || eTarget === dateElement || eTarget.className === "card-section") {
           return;
         }
 
 
         if (eTarget !== sliderHandleElement) {
-          self.arrowPress(eTarget, 'left');
+          self.arrowPress(e, 'left');
 
         } else {
 
-          self.arrowPressSlider(e, 'left');
+          self.arrowPressSlider(e, 'left', sliderElement, sliderHandleElement, timeFromInputElement, timeToInputElement, self.onScrollWindow, utils.getCoords);
         }
         break;
 
       case 39: //стрелка вправо
 
-        if (eTarget === phoneElement) {
+        if (eTarget === phoneElement || eTarget === addressElement || eTarget === dateElement || eTarget.className === "card-section") {
           return;
         }
 
         if (eTarget !== sliderHandleElement) {
 
           //console.log(self.arrowPress);
-          self.arrowPress(eTarget, 'right');
+          self.arrowPress(e, 'right');
         } else {
 
-          self.arrowPressSlider(e, 'right');
+          self.arrowPressSlider(e, 'right', sliderElement, sliderHandleElement, timeFromInputElement, timeToInputElement, self.onScrollWindow, utils.getCoords);
         }
         break;
 
@@ -401,7 +406,7 @@ var GetGood = function(elem) {
         if (eTarget.className !== 'card-section') {
           return;
         }
-        self.cardBackspace(eTarget);
+        self.cardBackspace(inputCheckElement, carTooltipElement, carErrorCreateElement, cardHiddenElement, tooltipSelectObj, buttonSubmitElement, self.formInputTooltips, self.buttonSubmitEnable, self.carValidOnBlur, self.carValid);
         break;
 
       default:
@@ -409,7 +414,6 @@ var GetGood = function(elem) {
     }
 
   };
-
 
 
   //Функция, вызываюшая обработчики события Input
@@ -421,7 +425,7 @@ var GetGood = function(elem) {
     if (inputCheckElement.classList.contains('card-section')) {
 
 
-      self.cardPay(inputCheckElement);
+      self.cardPay(inputCheckElement, carTooltipElement, carErrorCreateElement, cardHiddenElement, tooltipSelectObj, buttonSubmitElement, self.formInputTooltips, self.buttonSubmitEnable, self.carValidOnBlur, self.carValid);
 
     }
 
@@ -438,7 +442,7 @@ var GetGood = function(elem) {
       datErrorCreateElement.classList.add('invisible');
 
       if (dateElement.value.length >= 10) {
-        self.datValidOnBlur();
+        self.datValidOnBlur(dateElement, datErrorCreateElement, tooltipSelectObj, buttonSubmitElement, self.buttonSubmitEnable);
       }
 
     }
@@ -454,334 +458,21 @@ var GetGood = function(elem) {
   };
 
 
-
-  //Обработчик событий передвижения ползуна слайдера с помощью клавиатуры
-  this.arrowPressSlider = function(e, directArrow) {
-
-
-    if (!e.altKey || !e.shiftKey) {
-      return;
-    }
-
-    if (timeFromInputElement.value === '08:00') {
-
-      sliderHandleElement.style.left = '0' + 'px';
-
-    }
-
-    window.onscroll = self.onScrollWindow;
-
-    //inputSliderSize = timeFromInputElement.getBoundingClientRect();
-
-    var sliderCoordsW = sliderElement.getBoundingClientRect();
-
-    //Интервал приращения горизонтальной координаты ползуна слайдера при его перемещении      с помощью клавиатуры, соответствующий 15-ти минутам
-    var cooordIntervalSlider;
-
-    var sliderHandleCoords = self.getCoords(sliderHandleElement);
-
-    oldLeft = parseInt(sliderHandleElement.style.left, 10);
-
-    var oldValue = timeFromInputElement.value;
-
-    var oldValueHours = oldValue.substring(0,2);
-    var oldValueMinutes = oldValue.substring(3);
-
-    var oldMinutes = parseInt(oldValueHours, 10) * 60 + parseInt(oldValueMinutes, 10);
-
-    var newMinutes;
-
-    //Кол-во шагов, которые осталось пройти до начала, или конца максимального интервала  времени доставки
-    var newSteps;
-
-    var newValue;
-
-    var newLeftSlider;
-
-    if (directArrow === 'left') {
-
-      newSteps = Math.round((oldMinutes - 480) / 15);
-
-      cooordIntervalSlider = Math.ceil(oldLeft / newSteps);
-
-      newLeftSlider =  oldLeft - cooordIntervalSlider;
-
-      newMinutes = oldMinutes - 15;
-
-      if (newLeftSlider < 0) {
-
-        newLeftSlider = 0;
-
-      }
-
-      if (newMinutes <= 480) {
-        newLeftSlider = 0;
-        newMinutes = 480;
-      }
-
-      if (oldValue === 480) {
-        newLeftSlider = 0;
-        newMinutes = 480;
-      }
-
-
-    } else {
-
-      newSteps = Math.round((deliveryMaxInterval * 60 + 480 - oldMinutes) / 15);
-
-      cooordIntervalSlider = Math.ceil((sliderCoordsW.width - oldLeft) / newSteps);
-
-      newLeftSlider =  oldLeft + cooordIntervalSlider;
-
-      newMinutes = oldMinutes + 15;
-
-
-      if (newLeftSlider > sliderCoordsW.width) {
-
-        newLeftSlider = sliderCoordsW.width;
-      }
-
-
-      if (newMinutes >= 1020) {
-        newLeftSlider = sliderCoordsW.width;
-        newMinutes = 1020;
-      }
-
-      if (oldValue === 1020) {
-        newLeftSlider = sliderCoordsW.width;
-        newMinutes = 1020;
-      }
-
-    }
-
-    sliderHandleElement.style.left = newLeftSlider + 'px';
-
-    var timeFromInputHours = Math.floor(newMinutes / 60);
-
-    var timeFromInputMinutes = (newMinutes - timeFromInputHours * 60);
-
-    if (timeFromInputHours < 10) {
-
-      timeFromInputHours = '0' + timeFromInputHours;
-    }
-
-    if (timeFromInputMinutes === 0) {
-
-      timeFromInputMinutes = '00';
-    }
-
-    timeFromInputElement.value = timeFromInputHours + ':' + timeFromInputMinutes;
-
-    timeToInputElement.value = (parseInt(timeFromInputHours, 10) + 2) + ':' + timeFromInputMinutes;
-
-  };
-
-
-
-
-  //Функция определения кооржинат для ползуна слайдера
-  this.getCoords = function(el) { // кроме IE8-
-    var box = el.getBoundingClientRect();
-
-    return {
-      top: box.top + pageYOffset,
-      left: box.left + pageXOffset
-    };
-  };
-
-
-
-  //Обработчик события mousedown при нажатии кнопки мыши на ползуне слайдера
-  this.elemOnEventMouseSliderDown = function(e) {
-
-    var sliderHandleCoords = self.getCoords(sliderHandleElement);
-
-    shiftX = e.pageX - sliderHandleCoords.left;
-
-    return shiftX;
-  };
-
-
-
-  //Обработчик события mousemove при движении мыши на родителе ползуна слайдера
-  this.elemOnEventMouseSliderMove = function(e) {
-
-    if (shiftX === null) {
-      return;
-    }
-
-     var sliderCoords = self.getCoords(sliderElement);
-    //  вычесть координату родителя, т.к. position: relative
-    var newLeft = e.pageX - shiftX - sliderCoords.left;
-
-    // курсор ушёл вне слайдера
-    if (newLeft < 0) {
-      newLeft = 0;
-    }
-
-    var rightEdge = sliderElement.offsetWidth;
-    if (newLeft > rightEdge) {
-      newLeft = rightEdge;
-    }
-
-    sliderHandleElement.style.left = newLeft + 'px';
-
-    //Расчет начала интервала времени доставки в сотых долях часа, соответствующего части ширины слайдера, которую прошел ползун к текущему моменту, если вся ширина слайдера соответствует 9-ти часам (с 8-ми до 17-ти часов)
-    var timeFrom = (8 + 9 * (parseInt(newLeft, 10) / (inputSliderSize.width))).toFixed(2);
-
-    var timeFromDecimal = timeFrom - Math.floor(timeFrom);
-    var intSliderValue = Math.floor(timeFrom);
-    if (timeFromDecimal >= 0.75) {
-      intSliderValue = intSliderValue + 1;
-    }
-
-    var timeTo = intSliderValue + 2;
-
-    if (intSliderValue < 10) {
-      intSliderValue = '0' + intSliderValue;
-    }
-
-    //Отображение времени начала и конца интервала  доставки на слайдере при движении ползуна по границе слайдера с интервалом в 15 минут
-    if (timeFrom >= 8.12 && timeFrom < 17) {
-
-      if (timeFromDecimal >= 0.00 && timeFromDecimal < 0.25) {
-        timeFromInputElement.value = intSliderValue + ':' + '15';
-        timeToInputElement.value = timeTo + ':' + '15';
-      }
-
-      if (timeFromDecimal >= 0.25 && timeFromDecimal < 0.50) {
-        timeFromInputElement.value = intSliderValue + ':' + '30';
-        timeToInputElement.value = timeTo + ':' + '30';
-      }
-
-      if (timeFromDecimal >= 0.50 && timeFromDecimal < 0.75) {
-        timeFromInputElement.value = intSliderValue + ':' + '45';
-        timeToInputElement.value = timeTo + ':' + '45';
-      }
-
-      if (timeFromDecimal >= 0.75) {
-        timeFromInputElement.value = intSliderValue + ':' + '00';
-        timeToInputElement.value = timeTo + ':' + '00';
-      }
-
-    } else {
-      if (timeFrom < 8.12) {
-        timeFromInputElement.value = intSliderValue + ':' + '00';
-        timeToInputElement.value = 10 + ':' + '00';
-      }
-
-      if (timeFrom >= 17.00) {
-        timeFromInputElement.value = '17:' + '00';
-        timeToInputElement.value = 19 + ':' + '00';
-      }
-
-    }
-
-  };
-
-
-  //Обработчик события mouseup при прекращении движения ползуна слайдера
-  this.elemOnEventMouseSliderUp = function() {
-    shiftX = null;
-    sliderHandleElement.blur();
-
-  };
-
-
-  //Обработчик события scroll при движении ползуна слайдера с помощью клавиатуры
-  this.onScrollWindow = function() {
-
-    if (document.activeElement === sliderHandleElement) {
-      window.scrollTo(0,0);
-      labelDataElement.scrollIntoView(true);
-    } else {
-      return;
-    }
-  };
-
-
-
-//Функция, проверяющая валидность введенной даты доставки, в том числе при первоначальной загрузке страницы. Скрывает, или показывает сообщение об ошибке. ВЫзывает функцию, блокирующую, или разблокирующую кнопку "Заказать".
-  this.datValidOnBlur = function() {
-
-    if (dateElement.value.trim() === '') {
-
-      validBlur.vdat = 0;
-      return;
-
-     }
-
-    var dateInputObject = new Date();
-
-    var ddInput = dateElement.value.substring(0,2);
-
-    ddInput = parseInt(ddInput, 10);
-
-    var mmInput = dateElement.value.substring(3,5);
-
-    mmInput = parseInt(mmInput, 10) - 1;
-
-    var yearInput = dateElement.value.substring(6);
-
-    yearInput = parseInt(yearInput, 10);
-
-    dateInputObject.setDate(ddInput);
-    dateInputObject.setMonth(mmInput);
-    dateInputObject.setFullYear(yearInput);
-
-    var valid = /^(\d{2}\/\d{2}\/\d{4})$/.test(dateElement.value);
-
-    if (!valid) {
-
-      datErrorCreateElement.classList.remove('invisible'); // Устанавливаем сообщение об ошибке
-
-      buttonSubmitElement.disabled = true;
-
-      return;
-    }
-
-    if (ddInput === 0 || ddInput > 31 || mmInput === -1 || mmInput > 11 || yearInput === 0)  {
-
-      datErrorCreateElement.classList.remove('invisible'); // Устанавливаем сообщение об ошибке
-
-      buttonSubmitElement.disabled = true;
-
-      return;
-    }
-
-    if (dateInputObject.getTime() >= today.getTime() + 24 * 60 * 60 * 1000 && dateInputObject.getTime() < today.getTime() + 8 * 24 * 60 * 60 * 1000)  {
-
-      delete validBlur.vdat;
-
-      datErrorCreateElement.classList.add('invisible');
-
-      self.buttonSubmitEnable(selectMenu, validBlur, buttonSubmitElement);
-
-      if (buttonSubmitElement.disabled === true) {
-        sliderHandleElement.focus();
-      }
-
-    } else {
-
-      validBlur.vdat = 0;
-
-      datErrorCreateElement.classList.remove('invisible');
-
-      buttonSubmitElement.disabled = true;
-
-    }
-
-  };
-
-
-
   elem.onclick = self.elemOnEventClick;
   elem.oninput = self.elemOnEventInput;
   elem.onkeydown = self.elemOnEventKeyboard;
-  sliderHandleElement.onmousedown = self.elemOnEventMouseSliderDown;
-  sliderElement.onmousemove = self.elemOnEventMouseSliderMove;
-  elem.onmouseup = self.elemOnEventMouseSliderUp;
 
+  sliderHandleElement.onmousedown = function (e) {
+    self.elemOnEventMouseSliderDown(e, sliderHandleElement, utils.getCoords);
+  };
+
+  sliderElement.onmousemove = function (e) {
+    self.elemOnEventMouseSliderMove(e, sliderElement, sliderHandleElement, timeFromInputElement, timeToInputElement, self.onScrollWindow, utils.getCoords);
+  };
+
+  elem.onmouseup = function (e) {
+    self.elemOnEventMouseSliderUp(sliderHandleElement);
+  };
 
   formElement.onsubmit = function() {
     return false;
@@ -794,23 +485,43 @@ var GetGood = function(elem) {
 };
 
 
-GetGood.prototype.pickup = menu_selection.pickup;
+GetGood.prototype.pickup = menuSelection.pickup;
 
-GetGood.prototype.delivery = menu_selection.delivery;
+GetGood.prototype.delivery = menuSelection.delivery;
 
-GetGood.prototype.addrpickup = menu_selection.addrpickup;
+GetGood.prototype.addrpickup = menuSelection.addrpickup;
 
-GetGood.prototype.card = menu_selection.card;
+GetGood.prototype.card = menuSelection.card;
 
-GetGood.prototype.cash = menu_selection.cash;
+GetGood.prototype.cash = menuSelection.cash;
 
-GetGood.prototype.arrowPress = arrow_press_menu_event.arrowPress;
+GetGood.prototype.arrowPress = arrowPressMenuEvent.arrowPress;
 
 GetGood.prototype.buttonSubmitEnable = button_submit_enable_disable.buttonSubmitEnable;
 
 GetGood.prototype.formInputTooltips = input_tooltips_hide_render.formInputTooltips;
 
 GetGood.prototype.validationAddrTel = validation_addr_tel.validationAddrTel;
+
+GetGood.prototype.cardPay = card_element.cardPay;
+
+GetGood.prototype.cardBackspace = card_element.cardBackspace;
+
+GetGood.prototype.carValidOnBlur = card_element.carValidOnBlur;
+
+GetGood.prototype.arrowPressSlider = slider.arrowPressSlider;
+
+GetGood.prototype.datValidOnBlur = date_element.datValidOnBlur;
+
+GetGood.prototype.elemOnEventMouseSliderDown = slider.elemOnEventMouseSliderDown;
+
+GetGood.prototype.elemOnEventMouseSliderMove = slider.elemOnEventMouseSliderMove;
+
+GetGood.prototype.elemOnEventMouseSliderUp = slider.elemOnEventMouseSliderUp;
+
+GetGood.prototype.onScrollWindow = slider.onScrollWindow;
+
+GetGood.prototype.carValid = card_element.carValid;
 
 GetGood.prototype.runOrder = run_order.runOrder;
 
@@ -831,8 +542,7 @@ actionSet.pickup(checkedMenuElementsObj, tooltipSelectObj, buttonSubmitElement, 
 checkedMenuElementsObj.menuCheckElement = checkedPicAddrElement;
 actionSet.addrpickup(checkedMenuElementsObj);
 
-actionSet.datValidOnBlur();
+actionSet.datValidOnBlur(dateElement, datErrorCreateElement, tooltipSelectObj, buttonSubmitElement, actionSet.buttonSubmitEnable);
 
 var focusFirstElement = utils.findLabelElement(methodPickupElement);
 focusFirstElement.focus();
-

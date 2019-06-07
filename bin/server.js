@@ -1,10 +1,8 @@
-'use strict'
-
+/* eslint-disable no-multiple-empty-lines */
 const express = require('express');
 
 const app = express();
 
-//const pictures = require('./data/pictures');
 const serverStatic = express.static;
 
 app.use(serverStatic('build'));
@@ -17,7 +15,7 @@ const webpackMiddlewareConfig = require('./middleware.config.js');
 const serverStat = serverStatic(webpackConfig.devServer.contentBase, {
   'index': ['index.html', 'index.htm']
 });
-//const app = express();
+
 
 const compiler = webpack(webpackConfig);
 const middleware = webpackMiddleware(compiler, webpackMiddlewareConfig);
@@ -25,91 +23,53 @@ app.use(middleware);
 
 
 
-app.
-    post('/', function (req, res){
+app
+  .post('/', function(req, res) {
+    var body = '';
 
-      var body = '';
+    var _end = 0;
 
-      var _end = 0;
+    req.on('data', function(data) {
+      try {
+        body += data;
 
-      req.on('data', function(data){
+        var bodyObj = JSON.parse(body);
 
-        try {
-
-          body += data;
-
-          var bodyObj = JSON.parse(body);
-
-          console.log('pickup ' + bodyObj.pick);
-
-          if ( bodyObj.pick === 0 ) {
-
-            console.log('pick = 0 ' + bodyObj.pick);
-
-            if ( bodyObj.phone.length < 2 || bodyObj.address.length < 2 ) {
-
-              console.log('phone ' + bodyObj.phone + bodyObj.phone.length);
-
-              console.log('addr ' + bodyObj.address + bodyObj.address.length);
-
-              throw new SyntaxError("Мало информации");
-
-            }
-
-          } else {
-            console.log('pick ' + bodyObj.pick);
-            if ( bodyObj.phone.length < 2 ) {
-
-              console.log('pic ' + bodyObj.pick);
-
-              throw new SyntaxError("Мало информации");
-
-             }
-
+        if (bodyObj.pick === 0) {
+          if (bodyObj.phone.length < 2 || bodyObj.address.length < 2) {
+            throw new SyntaxError('Мало информации');
           }
-
-
-        } catch (e) {
-
-          console.log('err ' + e);
-
-          _end = 1;
-
-          if (e.message === "Мало информации") {
-
-            res.status(400).send("Ошибка: Вы ввели слишком мало информации. Заявка не принята. Попробуйте снова.");
-
-          } else {
-
-            res.status(500).send("Произошла непредвиденная ошибка. Заявка не принята. Попробуйте снова.");
-
+        } else {
+          if (bodyObj.phone.length < 2) {
+            throw new SyntaxError('Мало информации');
           }
-
         }
+      } catch (e) {
+        _end = 1;
 
-      });
-
-      req.on('end', function(){
-
-        if (_end === 0) {
-
-          console.log('noerr' + _end);
-
-          res.writeHead(200, {
-
-            'Cache-Control': 'no-cache'
-
-          });
-
+        if (e.message === 'Мало информации') {
+          res.status(400).send('Ошибка: Вы ввели слишком мало информации. Заявка не принята. Попробуйте снова.');
+        } else {
+          res.status(500).send('Произошла непредвиденная ошибка. Заявка не принята. Попробуйте снова.');
         }
+      }
+    });
 
-        res.end("Заявка принята");
+    req.on('end', function() {
+      if (_end === 0) {
+        console.log('noerr' + _end);
 
-      });
+        res.writeHead(200, {
 
+          'Cache-Control': 'no-cache'
 
-    }).
-    get('/', serverStat);
+        });
+      }
+
+      res.end('Заявка принята');
+    });
+  })
+  .get('/', serverStat);
 
 app.listen(8080);
 

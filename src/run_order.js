@@ -11,10 +11,6 @@ module.exports = {
   //Функция, вызываемая при отправке формы.
   runOrder: function(serverSendingElementsObj, checkedMenuElementsObj, tooltipSelectObj, buttonSubmitElement, buttonSubmitEnable, funcsObj) {    
 
-    //const addr = tooltipSelectObj.inputFieldsArr[0];
-    //const tel = tooltipSelectObj.inputFieldsArr[2];
-
-
     //Объект для данных формы, если выбрана доставка по городу
     var jsonDeliv = {};
 
@@ -80,7 +76,8 @@ module.exports = {
 
       serverSendingElementsObj.phoneElement.value = ''; 
 
-      //buttonSubmitElement.disabled = true;
+
+      serverSendingElementsObj.methodPickupElement.setAttribute('checked', 'true');
 
     } 
 

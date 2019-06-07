@@ -5,9 +5,11 @@
   <meta charset="utf-8">
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
- 
+
   <link rel="stylesheet" href="css/main.css" media="screen" title="no title" charset="utf-8">
   <title>Оформление заказа</title>
+
+  <script src="https://api-maps.yandex.ru/2.1/?apikey=4ea74e87-6f6e-4b0b-b383-a78720484037&lang=ru_RU" type="text/javascript"></script>
 </head>
 
 <body>
@@ -30,19 +32,19 @@
 
         <div role="radiogroup">
           <input type="radio" id="pickup-point-1" name="pickup-point" value="addrpickup" tabindex="-1" checked>
-          <label for="pickup-point-1" tabindex="0">Высоцкого, 2</label>
+          <label for="pickup-point-1" data-latit="56.840537" data-longit="60.672259" tabindex="0">Высоцкого, 2 </label>
 
           <input type="radio" id="pickup-point-2" name="pickup-point" value="addrpickup">
-          <label for="pickup-point-2" tabindex="0">Сиреневый бульвар, 2</label>
+          <label for="pickup-point-2" data-latit="56.83445657" data-longit="60.68302100" tabindex="0">Сиреневый бульвар, 2</label>
 
           <input type="radio" id="pickup-point-3" name="pickup-point" value="addrpickup">
-          <label for="pickup-point-3" tabindex="0">Рассветная, 3Б</label>
+          <label for="pickup-point-3" data-latit="56.83665257" data-longit="60.68866250" tabindex="0">Рассветная, 3Б</label>
 
           <input type="radio" id="pickup-point-4" name="pickup-point" value="addrpickup">
-          <label for="pickup-point-4" tabindex="0">Сыромолотова, 7</label>
+          <label for="pickup-point-4" data-latit="56.84060607" data-longit="60.68055950" tabindex="0">Сыромолотова, 7</label>
         </div>
 
-        <div class="map-container"></div>
+        <div id="map-container"></div>
       </fieldset>
 
       <fieldset role="tabpanel" aria-labelledby="delivery-label">
@@ -54,10 +56,9 @@
           <input type="text" id="address" name="address">
         </fieldset>
 
-        
         <fieldset class="group">
-          <label for="date" tabindex="-1">Дата доставки</label>         
-          <input type="text" id="date" name="date" value="23/08/1988">
+          <label for="date" tabindex="-1">Дата доставки</label>
+          <input type="text" id="date" name="date" value="23/08/1988" style="width:90px; height:20px; font-size:14px;" maxlength="10">
         </fieldset>
 
         <fieldset class="group time">
@@ -84,10 +85,10 @@
 
           <input type="hidden" name="credit-card" required>
 
-          <input type="text" id="card-1" class="card-section" maxlength="4">
-          <input type="text" id="card-2" class="card-section" maxlength="4">
-          <input type="text" id="card-3" class="card-section" maxlength="4">
-          <input type="text" id="card-4" class="card-section" maxlength="4">
+          <input type="text" id="card-1" class="card-section" maxlength="4" style="width:38px; height:20px; font-size:14px;">
+          <input type="text" id="card-2" class="card-section" maxlength="4" style="width:38px; height:20px; font-size:14px;">
+          <input type="text" id="card-3" class="card-section" maxlength="4" style="width:38px; height:20px; font-size:14px;">
+          <input type="text" id="card-4" class="card-section" maxlength="4" style="width:38px; height:20px; font-size:14px;">
         </fieldset>
       </fieldset>
     </section>
