@@ -22,8 +22,6 @@ var containerLayoutElement = document.querySelector('#layout');
 
 var formElement = document.querySelector('form');
 
-//var sectionElement = document.querySelector('section');
-
 var methodPickupElement = document.querySelector('#delivery-1');
 var checkedPicAddrElement = document.querySelector('input[name = "pickup-point"]:checked');
 
@@ -139,9 +137,6 @@ var deliveryMaxInterval = 9; //Максимальное количество ч�
 var containerSubmitElement = document.querySelector('.submit');
 
 var buttonSubmitElement = containerSubmitElement.childNodes[1];
-
-//Элемент для вывода на экран сообщения сервера
-//var serverResponseCreateElement = document.createElement('h3');
 
 
 var tooltipSubmitElement = document.querySelector('.submit p');
