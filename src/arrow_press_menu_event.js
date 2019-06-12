@@ -1,4 +1,3 @@
-'use strict';
 
 var utils = require('./utils');
 
@@ -15,7 +14,6 @@ var lengthAddrPickupMenu = addrPickupMenuArr.length;
 var paymentMenuArr = Array.prototype.slice.call(paymentMenuElement, 0);
 var lengthPaymentMenu = paymentMenuArr.length;
 
-
 var methodInputElements = document.querySelectorAll('input[name="delivery-method"]');
 var addrPickupInputElements = document.querySelectorAll('input[name="pickup-point"]');
 var paymentInputElements = document.querySelectorAll('input[name="payment-method"]');
@@ -29,7 +27,7 @@ var lengthAddrPickupInput = addrPickupInputArr.length;
 var paymentInputArr = Array.prototype.slice.call(paymentInputElements, 0);
 var lengthPaymentInput = paymentInputArr.length;
 
-var lab = 0; //признак того, какой элемент активен - label, или input.
+var lab = 0; // признак того, какой элемент активен - label, или input.
 
 var menuArr;
 var menuArrLength;
@@ -37,31 +35,24 @@ var indexMenuArr;
 
 module.exports = {
 
-//Обработчик событий нажатия стрелок влево и вправо для установки фокуса на элементах меню
+  // Обработчик событий нажатия стрелок влево и вправо для установки фокуса на элементах меню
 
   arrowPress: function(e, direct) {
-
     e.preventDefault();
 
     var eArrowTarget = e.target;
 
-    if (eArrowTarget.parentElement.getAttribute("role") !== "radiogroup") {
-
+    if (eArrowTarget.parentElement.getAttribute('role') !== 'radiogroup') {
       return;
+    };
 
-    }; 
-
-
-    if (e.target.hasAttribute('for')) { //когда элемент меню label был активирован клавишей Tab
-
+    if (e.target.hasAttribute('for')) { // когда элемент меню label был активирован клавишей Tab
       lab = 1;
 
       if (methodMenuArr.indexOf(eArrowTarget) !== -1) {
-
         menuArr = methodMenuArr;
         menuArrLength = lengthMethodMenu;
         indexMenuArr = methodMenuArr.indexOf(eArrowTarget);
-
       }
 
       if (addrPickupMenuArr.indexOf(eArrowTarget) !== -1) {
@@ -75,17 +66,13 @@ module.exports = {
         menuArrLength = lengthPaymentMenu;
         indexMenuArr = paymentMenuArr.indexOf(eArrowTarget);
       }
-
-    } else {//когда элемент меню input был активирован кликом, Enter или был активирован стрелкой
-
-      lab = 0; 
+    } else { // когда элемент меню input был активирован кликом, Enter или был активирован стрелкой
+      lab = 0;
 
       if (methodInputArr.indexOf(eArrowTarget) !== -1) {
-
         menuArr = methodInputArr;
         menuArrLength = lengthMethodInput;
         indexMenuArr = methodInputArr.indexOf(eArrowTarget);
-
       }
 
       if (addrPickupInputArr.indexOf(eArrowTarget) !== -1) {
@@ -99,101 +86,67 @@ module.exports = {
         menuArrLength = lengthPaymentInput;
         indexMenuArr = paymentInputArr.indexOf(eArrowTarget);
       }
+    }
 
-    } 
-  
-    switch(indexMenuArr) {
-
+    var inputArr;
+    switch (indexMenuArr) {
       case 0:
-
-        if(direct === 'left') {
-
+        if (direct === 'left') {
           if (lab === 1) {
-
-            var inputArr = utils.findInputElement(menuArr[menuArrLength - 1]);
+            inputArr = utils.findInputElement(menuArr[menuArrLength - 1]);
             inputArr.focus();
-
           } else {
-
-            menuArr[menuArrLength - 1].focus(); 
+            menuArr[menuArrLength - 1].focus();
           }
-
-        } else { //right
-
+        } else { // right
           if (lab === 1) {
-
-            var inputArr = utils.findInputElement(menuArr[1]);
+            inputArr = utils.findInputElement(menuArr[1]);
             inputArr.focus();
-
           } else {
-
-            menuArr[1].focus(); 
+            menuArr[1].focus();
           }
-
         }
 
         break;
 
       case menuArrLength - 1:
 
-        if(direct === 'left') {
-
+        if (direct === 'left') {
           if (lab === 1) {
-
-            var inputArr = utils.findInputElement(menuArr[menuArrLength - 2]);
+            inputArr = utils.findInputElement(menuArr[menuArrLength - 2]);
             inputArr.focus();
-
           } else {
-
-            menuArr[menuArrLength - 2].focus(); 
+            menuArr[menuArrLength - 2].focus();
           }
-
-        } else { //right
-
+        } else { // right
           if (lab === 1) {
-
-            var inputArr = utils.findInputElement(menuArr[0]);
+            inputArr = utils.findInputElement(menuArr[0]);
             inputArr.focus();
-
           } else {
-
-            menuArr[0].focus(); 
+            menuArr[0].focus();
           }
-
         }
         break;
 
       default:
-        if(direct === 'left') {
-
+        if (direct === 'left') {
           if (lab === 1) {
-
-            var inputArr = utils.findInputElement(menuArr[indexMenuArr - 1]);
+            inputArr = utils.findInputElement(menuArr[indexMenuArr - 1]);
             inputArr.focus();
-
           } else {
-
-            menuArr[indexMenuArr - 1].focus(); 
+            menuArr[indexMenuArr - 1].focus();
           }
-
-        } else {//right
-
+        } else { // right
           if (lab === 1) {
-
-            var inputArr = utils.findInputElement(menuArr[indexMenuArr + 1]);
+            inputArr = utils.findInputElement(menuArr[indexMenuArr + 1]);
             inputArr.focus();
-
           } else {
-
-            menuArr[indexMenuArr + 1].focus(); 
+            menuArr[indexMenuArr + 1].focus();
           }
-
         }
 
         break;
     }
-
   }
 
 };
-
