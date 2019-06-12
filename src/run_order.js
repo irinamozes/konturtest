@@ -1,38 +1,34 @@
-'use strict';
 
 var utils = require('./utils');
 
-//Элемент для вывода на экран сообщения сервера 
+// Элемент для вывода на экран сообщения сервера
 var serverResponseCreateElement = document.createElement('h3');
-
 
 module.exports = {
 
-  //Функция, вызываемая при отправке формы.
-  runOrder: function(serverSendingElementsObj, checkedMenuElementsObj, tooltipSelectObj, buttonSubmitElement, buttonSubmitEnable, funcsObj) {    
-
-    //Объект для данных формы, если выбрана доставка по городу
+  // Функция, вызываемая при отправке формы.
+  runOrder: function(serverSendingElementsObj, checkedMenuElementsObj, tooltipSelectObj, buttonSubmitElement, buttonSubmitEnable, funcsObj) {
+    // Объект для данных формы, если выбрана доставка по городу
     var jsonDeliv = {};
 
-    //Объект для  данных  формы, если выбран самовывоз
+    // Объект для  данных  формы, если выбран самовывоз
     var jsonPickup = {};
 
-    //Переменная для данных, отправляемых на сервер в формате json 
-    var jsonOrder;  
+    // Переменная для данных, отправляемых на сервер в формате json
+    var jsonOrder;
 
     var containerSubmitElement = buttonSubmitElement.parentNode;
 
     if (tooltipSelectObj.selectMenu.pic === 0) {
-
       buttonSubmitElement.disabled = true;
 
       buttonSubmitElement.blur();
 
-      var timeFrom = "time-from";
+      var timeFrom = 'time-from';
 
-      var timeTo = "time-to"; 
+      var timeTo = 'time-to';
 
-      var creditCard = "credit-card"
+      var creditCard = 'credit-card';
 
       jsonDeliv.address = serverSendingElementsObj.addressElement.value;
       jsonDeliv.phone = serverSendingElementsObj.phoneElement.value;
@@ -42,11 +38,8 @@ module.exports = {
       jsonDeliv.pick = 0;
 
       if (tooltipSelectObj.selectMenu.payCard === 1) {
-
         jsonDeliv[creditCard] = serverSendingElementsObj.cardHiddenElement.value;
-
-      } 
-
+      }
 
       jsonOrder = JSON.stringify(jsonDeliv);
 
@@ -55,18 +48,12 @@ module.exports = {
       serverSendingElementsObj.sliderHandleElement.style.left = '0' + 'px';
 
       serverSendingElementsObj.methodDelivElement.setAttribute('checked', 'true');
-
-      //buttonSubmitElement.disabled = true;
-
-    } else { 
-
+    } else {
       buttonSubmitElement.disabled = true;
 
       buttonSubmitElement.blur();
 
-      jsonPickup.phone = serverSendingElementsObj.phoneElement.value; 
-
-      //console.log('addressPickup ' + checkedMenuElementsObj.addressPickup); 
+      jsonPickup.phone = serverSendingElementsObj.phoneElement.value;
 
       jsonPickup.addressPic = checkedMenuElementsObj.addressPickup;
 
@@ -74,58 +61,45 @@ module.exports = {
 
       jsonOrder = JSON.stringify(jsonPickup);
 
-      serverSendingElementsObj.phoneElement.value = ''; 
-
+      serverSendingElementsObj.phoneElement.value = '';
 
       serverSendingElementsObj.methodPickupElement.setAttribute('checked', 'true');
-
-    } 
+    }
 
     var xhr = new XMLHttpRequest();
 
-    xhr.onload = function(evt) {
+    xhr.onload = function() {
+      var serverResMes;
 
-      if ( xhr.status === 200) {
- 
-        var serverResMes = 'Заявка принята!'; 
+      if (xhr.status === 200) {
+        serverResMes = 'Заявка принята!';
 
-        utils.displayMes(containerSubmitElement, serverResponseCreateElement, serverResMes, 'green', 'none'); 
-
+        utils.displayMes(containerSubmitElement, serverResponseCreateElement, serverResMes, 'green', 'none');
       } else {
+        serverResMes = xhr.responseText;
 
-        var serverResMes = xhr.responseText;
+        utils.displayMes(containerSubmitElement, serverResponseCreateElement, serverResMes, 'red', 'none');
+      }
 
-        utils.displayMes(containerSubmitElement, serverResponseCreateElement, serverResMes, 'red', 'none'); 
+      // var timeout;
 
-      } 
+      // Переменная для количества секунд, в течении которого будет виден ответ сервера
+      var timeSeconds;
 
-      var timeout;
-
-      //Переменная для количества секунд, в течении которого будет виден ответ сервера 
-      var timeSeconds; 
-
-
-      if ( xhr.status === 200) {
-
+      if (xhr.status === 200) {
         timeSeconds = 1000;
-
       } else {
+        timeSeconds = 5000;
+      }
 
-        timeSeconds = 5000;         
-      
-      } 
-
-
-      timeout = setTimeout(function(){
-
+      setTimeout(function() {
         serverSendingElementsObj.formElement.reset();
 
-        serverResponseCreateElement.textContent = ''; 
+        serverResponseCreateElement.textContent = '';
 
-        serverSendingElementsObj.legendElement.scrollIntoView(true);  
+        serverSendingElementsObj.legendElement.scrollIntoView(true);
 
         if (tooltipSelectObj.selectMenu.pic === 0) {
-
           tooltipSelectObj.tooltipInput.iaddr = 0;
           tooltipSelectObj.tooltipInput.itel = 0;
           tooltipSelectObj.tooltipInput.icar = 0;
@@ -136,7 +110,7 @@ module.exports = {
 
           checkedMenuElementsObj.menuCheckElement = serverSendingElementsObj.methodDelivElement;
 
-          funcsObj.delivery(checkedMenuElementsObj, tooltipSelectObj, buttonSubmitElement,     buttonSubmitEnable, funcsObj);  
+          funcsObj.delivery(checkedMenuElementsObj, tooltipSelectObj, buttonSubmitElement, buttonSubmitEnable, funcsObj);
 
           serverSendingElementsObj.telTooltipElement.classList.remove('invisible');
 
@@ -145,9 +119,7 @@ module.exports = {
           serverSendingElementsObj.addressTooltipElement.classList.remove('invisible');
 
           serverSendingElementsObj.addressElement.focus();
-
         } else {
-
           tooltipSelectObj.tooltipInput.iaddr = 0;
           tooltipSelectObj.tooltipInput.itel = 0;
           tooltipSelectObj.tooltipInput.icar = 0;
@@ -164,17 +136,15 @@ module.exports = {
 
           checkedMenuElementsObj.menuCheckElement = serverSendingElementsObj.checkedPicAddrElement;
           funcsObj.addrpickup(checkedMenuElementsObj);
-
-        } 
+        }
       }, timeSeconds);
-
-    }
+    };
 
     xhr.open('POST', '/', true);
 
-    xhr.send(jsonOrder);
+    // xhr.open('POST', 'http://httpbin.org/post', true);
 
+    xhr.send(jsonOrder);
   }
 
-}
-
+};

@@ -251,13 +251,29 @@ div.payment {
 label:focus {
   border: solid 2px !important;
 
-  border-color: green !important;
+  border-color: rgb(0, 124, 128) !important;
 }
+
+div[role=radiogroup] input[type=radio]:checked+label:focus {
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5) inset;
+  border: solid 2px !important;
+  border-right: solid 2px #998b9d !important;
+  border-color:rgb(0, 124, 128) !important;
+}
+
+div[role=radiogroup] input[type=radio]:checked:focus+label {
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5) inset;
+  border: solid 2px !important;
+  border-right: solid 2px #998b9d !important;
+  border-color:rgb(0, 124, 128) !important;
+}
+
+
 
 div[role=radiogroup] input[type=radio]:focus + label {
   border: solid 2px;
 
-  border-color: green;
+  border-color: rgb(0, 124, 128);
 }
 
 div[role=radiogroup] input[type=radio]:blur + label {
@@ -269,5 +285,5 @@ div[role=radiogroup] input[type=radio]:blur + label {
 .submit button:focus {
   border: solid 2px !important;
 
-  border-color: green !important;
+  border-color: rgb(0, 124, 128) !important;
 }
