@@ -86,7 +86,8 @@ div[role=radiogroup] input[type=radio] {
 
 div[role=radiogroup] label {
   background: linear-gradient(180deg, #eee0f3, #a392a7);
-  border-right: solid 1px #998b9d;
+  border-right: solid 2px #998b9d;
+  /* border: solid 2px rgba(115, 81, 132); */
   cursor: pointer;
   font-size: 0.8em;
   padding: 5px 10px;
@@ -94,8 +95,8 @@ div[role=radiogroup] label {
 
 div[role=radiogroup] input[type=radio]:checked + label {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5) inset;
-  border: solid 0px !important;
-  border-right: solid 1px #998b9d !important;
+  /* border: solid 0px !important; */
+  border-right: solid 2px #998b9d !important;
 }
 
 div[role=radiogroup] label:first-of-type {
@@ -203,8 +204,11 @@ div.payment {
 }
 
 .submit button:disabled {
-  opacity: 0.6;
+  color: black;
+  opacity: 0.4;
 }
+
+
 
 .submit p {
   flex-grow: 1;
@@ -247,39 +251,37 @@ div.payment {
 }
 
 
-/* Стили для label и button при установке на них фокуса с помощью клавиши Tab */
+/* Стили для label при установке на них фокуса с помощью клавиши Tab, или при установке фокуса на соответствующий им input */
 label:focus {
   border: solid 2px !important;
-
   border-color: rgb(0, 124, 128) !important;
+  /* border-color: rgb(115, 81, 132) !important; серобуромалиновый*/
 }
 
 div[role=radiogroup] input[type=radio]:checked+label:focus {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5) inset;
   border: solid 2px !important;
   border-right: solid 2px #998b9d !important;
-  border-color:rgb(0, 124, 128) !important;
+  border-color: rgb(0, 124, 128) !important;
 }
 
 div[role=radiogroup] input[type=radio]:checked:focus+label {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5) inset;
   border: solid 2px !important;
   border-right: solid 2px #998b9d !important;
-  border-color:rgb(0, 124, 128) !important;
+  border-color: rgb(0, 124, 128) !important;
 }
-
-
 
 div[role=radiogroup] input[type=radio]:focus + label {
   border: solid 2px;
 
-  border-color: rgb(0, 124, 128);
+  border-color: rgb(0, 124, 128) !important;
 }
 
 div[role=radiogroup] input[type=radio]:blur + label {
   border: solid 0px;
 
-  border-right: solid 1px #998b9d;
+  border-right: solid 2px #998b9d;
 }
 
 .submit button:focus {

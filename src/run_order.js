@@ -95,7 +95,10 @@ module.exports = {
       setTimeout(function() {
         serverSendingElementsObj.formElement.reset();
 
-        serverResponseCreateElement.textContent = '';
+        // serverResponseCreateElement.textContent = '';
+
+        var parentRespElement = serverResponseCreateElement.parentNode;
+        parentRespElement.removeChild(serverResponseCreateElement);
 
         serverSendingElementsObj.legendElement.scrollIntoView(true);
 
