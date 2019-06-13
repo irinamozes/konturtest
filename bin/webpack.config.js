@@ -6,6 +6,8 @@ const OUTPUT_DIRNAME = 'build';
 const SRC_DIRNAME = 'src';
 
 module.exports = {
+  mode: 'none',
+
   devServer: {
     contentBase: path.resolve(projectRoot, OUTPUT_DIRNAME),
     entryPath: path.resolve(projectRoot, SRC_DIRNAME)

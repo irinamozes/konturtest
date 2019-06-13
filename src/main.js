@@ -1,7 +1,6 @@
 /* eslint-disable no-multiple-empty-lines */
-// 'use strict';
-
 var utils = require('./utils');
+
 var menuSelection = require('./menu_selection');
 
 var arrowPressMenuEvent = require('./arrow_press_menu_event');
@@ -19,13 +18,6 @@ var cardElementFuncs = require('./card_element');
 var slider = require('./slider');
 
 var runOrderFunc = require('./run_order');
-
-var ariaLabel = document.querySelector('fieldset[aria-labelledby = "delivery-label"]');
-var ariaAttr = 'aria-labelledby';
-ariaLabel.removeAttribute(ariaAttr);
-console.log(ariaLabel);
-ariaLabel.setAttribute(ariaAttr, 'delivery-label');
-console.log(ariaLabel);
 
 var legendElement = document.querySelector('legend');
 
@@ -81,7 +73,7 @@ var carTooltipElement = document.createElement('div');
 
 var carTooltipMes = 'В номере карты должно быть 16 знаков';
 
-utils.displayMes(cardInputArr[3], carTooltipElement, carTooltipMes, 'red', 'right', 'tooltip');
+utils.displayMes(cardInputArr[3], carTooltipElement, carTooltipMes, 'greenyellow', 'right', 'tooltip');
 
 
 var card1Element = document.querySelector('#card-1');
@@ -487,5 +479,4 @@ actionSet.addrpickup(checkedMenuElementsObj);
 
 actionSet.datValidOnBlur(dateElement, datErrorCreateElement, tooltipSelectObj, buttonSubmitElement, actionSet.buttonSubmitEnable);
 
-var focusFirstElement = utils.findLabelElement(methodPickupElement);
-focusFirstElement.focus();
+methodPickupElement.focus();
