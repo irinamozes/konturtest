@@ -133,7 +133,7 @@ tooltipSubmitElement.childNodes[2].setAttribute('for', 'address');
 tooltipSubmitElement.childNodes[4].setAttribute('for', 'card-1');
 
 
-// Объект, показывающий какой пункт в двупунктном меню выбран
+// Объект, показывающий какой пункт в двухпунктном меню выбран.
 var selectMenu = {};
 selectMenu.pic = 0;
 selectMenu.deliv = 0;
@@ -168,14 +168,14 @@ const addr = inputFieldsArr[0];
 const tel = inputFieldsArr[2];
 
 
-// Объект со свойствами, показывающими какое из обзательных полей заполнено, а какое нет, обеспечивающий возможность выводить, или убирать текст "Осталось заполнить", который может использоваться в качестве параметра функций
+// Объект со свойствами, показывающими какое из обзательных полей заполнено, а какое нет, обеспечивающий возможность выводить, или убирать текст "Осталось заполнить".
 var tooltipInput = {};
 tooltipInput.iaddr = 0;
 tooltipInput.itel = 0;
 tooltipInput.icar = 0;
 
 
-// Объект со свойствами, показывающими какое из обзательных полей заполнено правильно, а какое нет, обеспечивающий возможность делать доступной, или недоступной кнопку "Заказать", который может использоваться в качестве параметра функций
+// Объект со свойствами, показывающими какое из обзательных полей заполнено правильно, а какое нет, обеспечивающий возможность делать доступной, или недоступной кнопку "Заказать".
 var validBlur = {};
 validBlur.vaddr = 0;
 validBlur.vtel = 0;
@@ -184,25 +184,23 @@ validBlur.vdat = 0;
 
 
 
-// Объект, объединяющий несколько объектов, которые могут использоваться в качестве параметров функций
+// Объект, объединяющий несколько объектов. Может использоваться в качестве параметра и аргумента функций.
 var tooltipSelectObj = { inputFieldsArr, tooltipInput, selectMenu, validBlur, tooltipSubmitElement };
 
 
-// Объект, объединяющий активные элементы различных меню, которые могут использоваться в качестве параметров функций
+// Объект, объединяющий активные элементы различных меню. Может использоваться в качестве параметра и аргумента функций.
 var checkedMenuElementsObj = { menuCheckElement, currentMethodCheckedElement, currentCardCheckedElement, currentPickupAddrCheckedElement, addressPickup };
 
 
-// Объект элементов, значения или состояния которых учитываются при обмене информацией с сервером, которые могут использоваться в качестве параметров функций
+// Объект элементов, значения или состояния которых учитываются при обмене информацией с сервером. Может использоваться в качестве параметра и аргумента функций.
 var serverSendingElementsObj = { legendElement, formElement, sliderHandleElement, methodDelivElement, methodPickupElement, checkedPicAddrElement, addressTooltipElement, carTooltipElement, telTooltipElement, addressElement, phoneElement, dateElement, timeFromInputElement, timeToInputElement, cardHiddenElement };
 
 
 
 
-// Конструктор объекта-контейнера с id = #layout, которому делегируются большинство событий.
+// Конструктор основного объекта приложения. elem - элемент с id = #layout, которому делегируется большинство событий.
 var GetGood = function(elem) {
   var self = this;
-
-  this.arrowPress = this.arrowPress.bind(this);
 
   var pickup = self.pickup;
   var delivery = self.delivery;
@@ -210,7 +208,7 @@ var GetGood = function(elem) {
   var card = self.card;
   var cash = self.cash;
 
-  // Объект, объединяющий функции, которые могут использоваться в качестве параметров других функций
+  // Объект, объединяющий функции в качестве своих свойств. Может использоваться как параметр и аргумент функций.
   var funcsObj = { pickup, delivery, addrpickup, card, cash };
 
 

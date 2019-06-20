@@ -145,8 +145,6 @@ module.exports = {
 
     xhr.open('POST', '/', true);
 
-    // xhr.open('POST', 'http://httpbin.org/post', true);
-
     xhr.send(jsonOrder);
   }
 

@@ -35,6 +35,10 @@ module.exports = {
       formInputTooltipsFunc(car, carErrorCreateElement, tooltipSelectObj, buttonSubmitElement, utils.pageViewInputTooltip);
     }
 
+    if (inputCheckElement !== document.activeElement) {
+      inputCheckElement = document.activeElement;
+    }
+
     if (inputCheckElement.value.length === 0 && inputCheckElement.getAttribute('id') !== 'card-1') {
       var indexCard = cardInputArr.indexOf(inputCheckElement);
       cardInputArr[indexCard - 1].focus();
