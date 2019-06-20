@@ -8,7 +8,7 @@ module.exports = {
 
     var validNot = /[\\/'"@<>;:&%!?]/.test(elementInputObj.elem.value);
 
-    if (valid && !validNot && elementInputObj.elem.value.trim().length >= 1) {
+    if (valid && !validNot) {
       delete validObj['v' + elementInputObj.name];
 
       elErrorCreateElement.classList.add('invisible');
@@ -19,8 +19,6 @@ module.exports = {
     }
 
     if (elementInputObj.elem.value.trim().length < 1) {
-      //      console.log(elementInputObj);
-
       validObj['v' + elementInputObj.name] = 0;
 
       buttonSubmitElement.disabled = true;
@@ -28,11 +26,17 @@ module.exports = {
       elTooltipElement.classList.remove('invisible');
 
       elErrorCreateElement.classList.add('invisible');
-
-      // console.log(buttonSubmitElement.disabled);
     }
 
-    if ((!valid || validNot) && elementInputObj.elem.value.trim().length >= 1) {
+    if ((!valid && !validNot) && elementInputObj.elem.value.trim().length >= 1) {
+      validObj['v' + elementInputObj.name] = 0;
+
+      buttonSubmitElement.disabled = true;
+
+      elTooltipElement.classList.remove('invisible');
+    }
+
+    if (validNot && elementInputObj.elem.value.trim().length >= 1) {
       validObj['v' + elementInputObj.name] = 0;
 
       buttonSubmitElement.disabled = true;

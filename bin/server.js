@@ -1,4 +1,3 @@
-/* eslint-disable no-multiple-empty-lines */
 const express = require('express');
 
 const app = express();
@@ -16,19 +15,13 @@ const serverStat = serverStatic(webpackConfig.devServer.contentBase, {
   'index': ['index.html', 'index.htm']
 });
 
-
 const compiler = webpack(webpackConfig);
 const middleware = webpackMiddleware(compiler, webpackMiddlewareConfig);
 app.use(middleware);
 
-
-
 app
   .post('/', function(req, res) {
-  // .post('http://httpbin.org/post', function(req, res) {
     var body = '';
-
-    var _end = 0;
 
     req.on('data', function(data) {
       try {
@@ -39,35 +32,23 @@ app
         if (bodyObj.pick === 0) {
           if (bodyObj.phone.length < 2 || bodyObj.address.length < 2) {
             throw new SyntaxError('Мало информации');
+          } else {
+            res.status(200).send('Заявка принята');
           }
         } else {
           if (bodyObj.phone.length < 2) {
             throw new SyntaxError('Мало информации');
+          } else {
+            res.status(200).send('Заявка принята');
           }
         }
       } catch (e) {
-        _end = 1;
-
         if (e.message === 'Мало информации') {
-          res.status(400).send('Ошибка: Вы ввели слишком мало информации. Заявка не принята. Попробуйте снова.');
+          res.status(422).send('Ошибка: Вы ввели слишком мало информации. Заявка не принята. Попробуйте снова.');
         } else {
           res.status(500).send('Произошла непредвиденная ошибка. Заявка не принята. Попробуйте снова.');
         }
       }
-    });
-
-    req.on('end', function() {
-      if (_end === 0) {
-        console.log('noerr' + _end);
-
-        res.writeHead(200, {
-
-          'Cache-Control': 'no-cache'
-
-        });
-      }
-
-      res.end('Заявка принята');
     });
   })
   .get('/', serverStat);
@@ -75,4 +56,3 @@ app
 app.listen(8080);
 
 console.log(' Сервер запущен на порту 8080. Откройте http://localhost:8080/ у себя в браузере. Чтобы остановить сервер, нажмите Ctrl+C');
-
